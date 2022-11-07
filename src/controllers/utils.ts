@@ -1,4 +1,4 @@
-export function calculateCost(level: number, base: number, factor: number) {
+export function calculateCostByLevel(level: number, base: number, factor: number) {
     return base + base * level * factor
 }
 

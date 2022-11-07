@@ -9,10 +9,10 @@ const resStore = useResourcesStore()
 
 const manualActions: ManualActionAndEffect[] = [
     {
-        name: 'Gather steel', 
-        description: 'Collect some steel from this devastated world.',
+        name: 'Gather stones', 
+        description: 'Collect some stones from this devastated world.',
         metadescription: 'Remember that you are an overseer, not a scavenger...',
-        effect: ()=>{ resStore.addResource('Steel', 1) }
+        effect: ()=>{ resStore.addResource('Stones', 1) }
     },
     {
         name: 'Gather rats & maggots', 

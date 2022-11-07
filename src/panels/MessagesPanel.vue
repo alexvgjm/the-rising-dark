@@ -21,7 +21,6 @@ const msgStore = useMessagesStore()
 .messages {
     flex-grow: 0.5;
     max-width: 30rem;
-    min-height: 100vh;
     margin-left: var(--space);
 
     max-height: 100vh;

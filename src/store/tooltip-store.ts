@@ -1,7 +1,6 @@
 import { defineStore } from "pinia";
-import { reactive, ref } from "vue";
-import { Building, Point, Resource } from "../app-types";
-import { calculateCost, calculateProduction, toMaxFix } from "../controllers/utils";
+import { ref } from "vue";
+import { Building, Consumer, Point, Producer, Resource } from "../app-types";
 import { useResourcesStore } from "./resources-store";
 
 export type TooltipSectionContent = {
@@ -10,117 +9,121 @@ export type TooltipSectionContent = {
 }
 
 export type TooltipSection = {
-    type: 'costs' | 'description' | 'metadescription',
+    type: 'costs' | 'description' | 'metadescription' | 'production',
     content: TooltipSectionContent[]
+}
+
+interface Tooltip {
+    type: 'simple' | 'building' | 'resource'
+    title: string
+    description: string,
+    metadescription: string,
+}
+
+export interface SimpleTooltip extends Tooltip {
+    type: 'simple'
+}
+
+export interface BuildingTooltip extends Tooltip {
+    type: 'building'
+    costs: {
+        quantity: ()=>number,
+        resource: string
+    }[]
+}
+
+export interface ResourceTooltip extends Tooltip {
+    type: 'resource'
+    producers: Producer[],
+    consumers: Consumer[]
 }
 
 export const useTooltipsStore = defineStore(
     'tooltip',
     () => {
-        const visible = ref(false)
-        const title = ref('Tooltip')
-        const position = ref({x: 0, y: 0})
-        const sections = reactive<TooltipSection[]>([])
-
         const resStore = useResourcesStore()
 
-        function showBuildingTooltip(building: Building, targetPos: Point) {
-            position.value = targetPos
+        const tooltip = ref<SimpleTooltip|BuildingTooltip|ResourceTooltip>({
+            type: 'simple',
+            title: 'Tooltip',
+            description: '',
+            metadescription: ''
+        })
 
-            title.value = building.name
-            sections.length = 0
+        const visible = ref(false)
+        const position = ref({x: 0, y: 0})
 
-            const costsSection: TooltipSection = {
-                type: 'costs',
-                content: []
-            }
-            building.buildCost.forEach(cost => {
-                const currentCost = 
-                    calculateCost(building.level, cost.base, cost.factor);
-
-                const resource = resStore.resources[cost.resource]
-
-                costsSection.content.push({
-                    classes: 
-                        currentCost > resource.quantity ? ['unaffordable'] : [],
-                    
-                    text: resource.emoji! + ` ${currentCost}`
-                })
-            })
-
-            const descSection: TooltipSection = {
-                type: 'description',
-                content: [{text: building.description}]
-            }
-
-            const metadescSection: TooltipSection = {
-                type: 'metadescription',
-                content: [{text: building.metadescription}]
-            }
-
-            sections.push(descSection, costsSection, metadescSection)
+        function show(targetPosition: Point) {
+            position.value = targetPosition
             visible.value = true
+        }
+
+        function showBuildingTooltip(building: Building, targetPos: Point) {
+            tooltip.value = {
+                type: 'building',
+                title: building.name,
+                description: building.description,
+                metadescription: building.metadescription,
+                costs: building.buildCost
+            }
+            show(targetPos)
         }
 
         function showResourceTooltip(res: Resource, targetPos: Point) {
             position.value = targetPos
 
-            title.value = res.emoji! + ' ' + res.name
-            sections.length = 0
-
-            const descSection: TooltipSection = {
-                type: 'description',
-                content: [{text: res.description}]
-            }
-
+            const consumers = resStore.getConsumersOf(res.name)
             const producers = resStore.getProducersOf(res.name)
-            const prodsSection: TooltipSection = {
-                type: 'costs',
-                content: producers.map(prod => {
-                    const production = calculateProduction(
-                        prod.level, prod.production.base, prod.production.factor
-                    )
-                    const prodStr = toMaxFix(production, 2)
-    
-                    return {
-                        classes: [(production >= 0 ? 'positive' : 'negative')],
-                        text: `${prod.name} (${prodStr}/s)`
-                    }
+            const converters = resStore.getConvertersOf(res.name)
+
+            converters.forEach(c => {
+                if ( !resStore.canConvert(c) ) { return }
+                
+                Object.entries(c.inputs).forEach(([cResName, qty]) =>{
+                    
+                    if (cResName != res.name || qty*c.multiplier() == 0) return
+                    consumers.push({
+                        description: c.description,
+                        resource: cResName,
+                        quantity: ()=>qty*c.multiplier()
+                    })
                 })
+
+                Object.entries(c.outputs).forEach(([cResName, qty]) =>{
+                    if (cResName != res.name || qty*c.multiplier() == 0) return
+                    producers.push({
+                        description: c.description,
+                        resource: cResName,
+                        quantity: ()=>qty*c.multiplier()
+                    })
+                })
+            })
+            
+            tooltip.value = {
+                type: 'resource',
+                title: res.emoji! + ' ' + res.name,
+                description: res.description,
+                metadescription: '',
+                consumers: consumers,
+                producers: producers
             }
             
-            sections.push(descSection, prodsSection)
-
-            visible.value = true
+            show(targetPos)
         }
 
-        function showSimpleTooltip(
-            ttTitle: string, description: string, 
-            metadescription: string, targetPos: Point) {
-            position.value = targetPos
-            title.value = ttTitle
-            sections.length = 0
-            sections.push({
-                type: 'description',
-                content: [{text: description}]
-            },
-            {
-                type: 'metadescription',
-                content: [{text: metadescription}]
-            })
-            visible.value = true
+        function showSimpleTooltip(params: SimpleTooltip, targetPos: Point) {
+            tooltip.value = {...params}
+            show(targetPos)
         }
 
         function hideTooltip() {
            visible.value = false
         }
 
-        
-
-
         return {
-            visible, title, sections, position, showBuildingTooltip, 
-            hideTooltip, showResourceTooltip, showSimpleTooltip
+            tooltip, visible, position,
+            showBuildingTooltip, hideTooltip, showResourceTooltip,
+            showSimpleTooltip
         }
     }
 )

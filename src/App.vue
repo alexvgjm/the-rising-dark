@@ -2,9 +2,11 @@
 import ResourcesPanel from './panels/ResourcesPanel.vue';
 import World from './panels/World.vue';
 import MessagesPanel from './panels/MessagesPanel.vue';
-import Tooltip from './components/Tooltip.vue';
+import SimpleTooltip from './components/Tooltips/SimpleTooltip.vue';
 import { onMounted } from 'vue';
 import { start } from './controllers/general';
+import BuildingTooltip from './components/Tooltips/BuildingTooltip.vue';
+import ResourceTooltip from './components/Tooltips/ResourceTooltip.vue';
 
 
 onMounted(()=>{
@@ -16,7 +18,9 @@ onMounted(()=>{
 <template>
 
   <main>
-    <Tooltip />
+    <SimpleTooltip />
+    <BuildingTooltip />
+    <ResourceTooltip />
     <ResourcesPanel />
     <World />
     <MessagesPanel />

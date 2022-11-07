@@ -2,26 +2,22 @@ export type Point = {
     x: number, y: number
 }
 
-export interface Producer {
-    level: number,
-    name: string,
-    production: {
-        resource: string,
-        base: number,
-        factor: number
-    }
-}
-
 export interface Consumer {
-    level: number,
-    name: string,
-    consumption: {
-        resource: string,
-        base: number,
-        factor: number
-    }
+    description: string,
+    resource: string
+    quantity: ()=>number
 }
-
+export interface Producer {
+    description: string,
+    resource: string
+    quantity: ()=>number
+}
+export interface Converter {
+    multiplier: ()=>number
+    description: string
+    inputs: {[key: string]: number}
+    outputs: {[key: string]: number}
+}
 
 export type Resource = {
     name: string,
@@ -52,8 +48,7 @@ export type Building = {
 
     buildCost: {
         resource: string,
-        base: number,
-        factor: number
+        quantity: ()=>number
     }[]
 
     consumption?: {
@@ -69,6 +64,11 @@ export type Building = {
     }[]
 }
 
+/** Resource Producer of Resource */
+export type RPR = {
+    resource: 'Humans',
+    producers: Producer[]
+}
 
 export type ManualAction = {
     name: string,

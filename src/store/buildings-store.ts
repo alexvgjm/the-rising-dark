@@ -1,7 +1,6 @@
 import { defineStore } from "pinia";
 import { reactive } from "vue";
-import { Building } from "../app-types";
-import { calculateCost } from "../controllers/utils";
+import { Building, Consumer, Converter, Producer } from "../app-types";
 import { useResourcesStore } from "./resources-store";
 
 export const useBuildingsStore = defineStore(
@@ -9,45 +8,49 @@ export const useBuildingsStore = defineStore(
     () => {
         const resStore = useResourcesStore()
 
-        const buildings = reactive<{[key: string]: Building}>({
-            'Human factory': {
-                name: 'Human factory',
-                description: '👨‍👩‍👧‍👦 More humans! (+0.01/s)',
-                metadescription: 'Sex pools, clonation labs, storks, whatever capable to make humans.',
+        const buildings: {[key: string]: Building} = reactive<{[key: string]: Building}>({
+            'Human pits': {
+                name: 'Human pits',
+                description: '👨‍👩‍👧‍👦 More humans! (+0.01/s) for food 🍗 (-0.25/s).',
+                metadescription: 'Fork is work, porks!',
                 level: 0,
-                buildCost: [{
-                    resource: 'Energy',
-                    base: 10,
-                    factor: 1.01
-                },
+                buildCost: [
                 {
-                    resource: 'Steel',
-                    base: 25,
-                    factor: 1.02
-                }],
-                consumption: [{
-                    resource: 'Energy',
-                    base: 0.1,
-                    factor: 1.01
-                },
-                {
-                    resource: 'Food',
-                    base: 0.1,
-                    factor: 1.01
-                }],
-                production: [{
-                    resource: 'Humans',
-                    base: 0.1,
-                    factor: 1.01
+                    resource: 'Stones',
+                    quantity: ()=>25 + 25 * buildings['Human pits'].level * 1.01,
                 }]
             }
         })
 
+        const buildingsProductions: {[key: string]: Producer[]} = {
+
+        }
+
+        const buildingConsumptions: {[key: string]: Consumer[]} = {
+
+        }
+
+        const buildingConverters: {[key: string]: Converter[]} = {
+            'Human pits': [
+                {
+                    multiplier: () => buildings['Human pits'].level,
+                    description: 'Humans pits activity',
+                    inputs: {
+                        'Food': 0.25
+                    },
+                    outputs: {
+                        'Humans': 0.1
+                    }
+                }
+            ]
+        }
+
+
+
         function isAffordable(building: Building) {
             return building.buildCost.every(cost => {
                 const available = resStore.resources[cost.resource].quantity
-                const currentCost = calculateCost(building.level, cost.base, cost.factor)
-                return available >= currentCost
+                return available >= cost.quantity()
             })
         }
 
@@ -56,12 +59,15 @@ export const useBuildingsStore = defineStore(
             if (!isAffordable(building)) { return }
             
             building.buildCost.forEach(cost => {
-                const currentCost = calculateCost(building.level, cost.base, cost.factor)
-                resStore.addResource(cost.resource, -currentCost)
+                resStore.removeResource(cost.resource, cost.quantity())
             })
 
             building.level++
         }
-        return { buildings, build }
+        return { buildings, 
+                buildingsProductions, 
+                buildingConsumptions,
+                buildingConverters,
+                build }
     }
 )

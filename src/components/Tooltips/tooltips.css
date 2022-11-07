@@ -1,0 +1,77 @@
+.tooltip {
+    position: fixed;
+    top: 0;
+    left: 0;
+    background: var(--color-background-darkest-a90);
+    flex-flow: column;
+    width: 20rem;
+    justify-content: center;
+    text-align: center;
+    padding: var(--space);
+    z-index: 1;
+}
+
+.tooltip__section {
+    margin-top: var(--h-space);
+    padding: var(--h-space) 0;
+    border-top: var(--border-size) solid var(--color-background);
+}
+
+
+.tooltip__section--costs {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: center;
+    gap: var(--space);
+}
+
+.tooltip__section:empty {
+    display: none;
+}
+
+.tooltip__section--metadescription {
+    font-style: italic;
+    opacity: 0.6;
+}
+
+
+.tooltip__production,
+.tooltip__consumer {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+}
+
+
+.tooltip__consumers {
+    color: var(--color-unaffordable);
+}
+
+.tooltip__producers {
+    color: var(--color-success);
+}
+
+.tooltip__resource-item {
+    display: flex;
+    justify-content: space-between;
+}
+
+/** Building specifics */
+
+.tooltip__costs {
+    display: flex;
+    justify-content: center;
+}
+
+.tooltip__cost {
+    margin-right: var(--space);
+}
+
+
+.tooltip__cost--unaffordable {
+    color: var(--color-unaffordable);
+}
+
+.tooltip__cost-resource {
+    margin-right: var(--q-space);
+}

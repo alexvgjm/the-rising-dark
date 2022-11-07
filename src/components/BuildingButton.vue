@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import { computed, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { Building } from '../app-types';
-import { calculateCost, remToPx } from '../controllers/utils';
+import { calculateCostByLevel, remToPx } from '../controllers/utils';
 import { useBuildingsStore } from '../store/buildings-store';
 import { useResourcesStore } from '../store/resources-store';
 import { useTooltipsStore } from '../store/tooltip-store';
@@ -17,24 +17,26 @@ const button = ref<HTMLButtonElement>()
 const affordable = computed(()=>{
     return props.buildCost.every(cost => {
         const available = resourceStore.resources[cost.resource].quantity
-        const currentCost = calculateCost(props.level, cost.base, cost.factor)
+        const currentCost = cost.quantity()
         return available >= currentCost
     })
 })
 
-function hoveringHandler(event: {currentTarget: EventTarget | null}) {
-    const button = event.currentTarget as HTMLButtonElement
-    const bRect = button.getBoundingClientRect()
+function hoveringHandler() {
+    const bRect = button.value!.getBoundingClientRect()
 
     const position = {
         x: bRect.left - (remToPx(20) - bRect.width) / 2,
-        y: bRect.bottom + 10 - button.scrollTop
+        y: bRect.bottom + 10 - button.value!.scrollTop
     }
     ttStore.showBuildingTooltip(props, position)
 }
 
 function clickHandler() {
-    if (affordable) { buildingStore.build(props.name) }
+    if (affordable) { 
+        buildingStore.build(props.name)
+        hoveringHandler()
+    }
 }
 </script>
 

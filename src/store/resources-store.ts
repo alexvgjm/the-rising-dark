@@ -1,24 +1,29 @@
 import { defineStore } from "pinia";
 import { reactive } from "vue";
-import { Producer, Resource } from "../app-types";
+import { Consumer, Converter, Producer, Resource, RPR } from "../app-types";
 import { calculateProduction } from "../controllers/utils";
 import { useBuildingsStore } from "./buildings-store";
+
+
+
+
+
 
 export const useResourcesStore = defineStore(
     'resources',
     () => {
         const buildingsStore = useBuildingsStore()
         const resources = reactive<{ [key: string]: Resource }>({
-            'Energy': {
-                name: 'Energy',
+            'Souls': {
+                name: 'Souls',
                 description: 'Your reason for existing. Extracted from humans.',
-                emoji: '⚡',
+                emoji: '🟣',
                 quantity: 5,
                 max: 200
             },
             'Humans': {
                 name: 'Humans',
-                description: 'Your main resource. Source of energy and fun.',
+                description: 'Your main resource. Source of souls and fun.',
                 emoji: '👨‍👩‍👧‍👦',
                 quantity: 0,
                 max: 3
@@ -30,87 +35,164 @@ export const useResourcesStore = defineStore(
                 quantity: 0,
                 max: 100
             },
-            'Steel': {
-                name: 'Steel',
+            'Stones': {
+                name: 'Stones',
                 description: 'A primitive way of physically exposing our might.',
-                emoji: '🔩',
+                emoji: '🪨',
                 quantity: 0,
                 max: 100
             }
         })
 
-
         const baseProducers = reactive<Producer[]>([
             {
-                name: 'Base',
-                level: 1,
-                production: { resource: 'Energy', base: 1, factor: 1 }
+                description: 'Base souls',
+                resource: 'Souls', 
+                quantity: ()=>1
             }
         ])
 
-        function getProducersOf(resource: string) {
+        const resourcesProducingResources = reactive<{[key: string]: Producer[]}>({
+            "Humans": [{
+                description: 'Souls from humans',
+                resource: 'Souls',
+                quantity: () => resources['Humans'].quantity * 0.5
+            }]
+        })
+
+        const resourcesConsumingResources = reactive<{[key: string]: Consumer[]}>({
+            "Humans": [{
+                description: 'Human food consumption',
+                resource: 'Food',
+                quantity: () => resources['Humans'].quantity * 0.25
+            }]
+        })
+
+        function getConsumersOf(resourceName: string): Consumer[] {
+            const fromResources = 
+                Object.values(resourcesConsumingResources)
+                      .flat()
+                      .filter(cons => cons.resource == resourceName)
+
+            const fromBuildings = 
+                Object.values(buildingsStore.buildingConsumptions)
+                      .flat()
+                      .filter(cons => cons.resource == resourceName)
+
+                
+            return [...fromResources, ...fromBuildings]
+        }
+
+        function getProducersOf(resourceName: string): Producer[] {
             const producers: Producer[] = []
             
-            producers.push(
-                ...baseProducers.filter(p => p.production.resource == resource)
-            )
+            // BASE PRODUCERS
+            const base: Producer[] = 
+                baseProducers.filter(p => p.resource == resourceName)
 
-            const buildingsProducingTheResource = 
-                Object.values(buildingsStore.buildings)
-                      .filter(b => b.production && b.level > 0 && b.production
-                                    .some(p => p.resource == resource))
+            // RESOURCES PRODUCING RESOURCES
+            const fromResources = 
+                Object.values(resourcesProducingResources)
+                      .flat()
+                      .filter(prod => prod.resource == resourceName)
             
-            buildingsProducingTheResource.forEach(b => {
-                const bProds: Producer[] = b.production!
-                                          .filter(p => p.resource == resource)
-                                          .map(p => {return {
-                                            name: b.name,
-                                            level: b.level,
-                                            production: p
-                                          }})
-            
-                producers.push(...bProds)
-            })
+            // BUILDINGS
+            const fromBuildings = 
+                Object.values(buildingsStore.buildingsProductions)
+                      .flat()
+                      .filter(prod => prod.resource == resourceName)
 
-            return producers
+            return [...base, ...fromResources, ...fromBuildings]
+        }
+
+        function getConvertersOf(resourceName: string): Converter[] {
+            const fromBuildings = 
+                Object.values(buildingsStore.buildingConverters)
+                    .flat()
+                    .filter(cons => resourceName in cons.inputs
+                                 || resourceName in cons.outputs)
+                
+            return [...fromBuildings]
+        }
+
+        function canConvert(converter: Converter) {
+            const canAfford = Object
+                .entries(converter.inputs)
+                .every(([resName, qty]) =>
+                     resources[resName].quantity >= 
+                        qty * converter.multiplier()
+                )
+
+            const notMaximumOutput = Object
+                .entries(converter.outputs)
+                .some(([resName, qty]) =>{
+                    return resources[resName].quantity < resources[resName].max
+                })
+
+            return canAfford && notMaximumOutput
+        }
+
+        function getTotalProductionOf(resource: string) {
+            const prods = getProducersOf(resource)
+            const consu = getConsumersOf(resource)
+
+            const totalProd = prods.reduce((acc, p) => acc + p.quantity(), 0)
+            const totalCons = consu.reduce((acc, c) => acc + c.quantity(), 0)
+
+            return totalProd - totalCons
         }
 
         function updateResources(delta: number) {
             const dtFactor = delta/1000
             
-            Object.values(resources).forEach((resource) => {
-                const producers = getProducersOf(resource.name)
-                producers.forEach(prod => {
-                    const production = calculateProduction(
-                        prod.level, 
-                        prod.production.base, 
-                        prod.production.factor)
-
-                    if (production != 0) {
-                        addResource(resource.name, production * dtFactor)
+            Object.keys(resources).forEach(res => {
+                const total = getTotalProductionOf(res)
+                total < 0 ? removeResource(res, Math.abs(total) * dtFactor)
+                          : addResource(res, total * dtFactor)
+                    
+                const converters = getConvertersOf(res)
+                converters.forEach(c => {
+                    if (canConvert(c)) {
+                        Object.entries(c.inputs).forEach(([resName, qty]) => {
+                            removeResource(resName, qty*c.multiplier()*dtFactor)
+                        })
+                        Object.entries(c.outputs).forEach(([resName, qty]) => {
+                            addResource(resName, qty*c.multiplier()*dtFactor)
+                        })
                     }
                 })
             })
+
         }
 
         function addResource(name: string, quantity: number) {
             const resource = resources[name]
             resource.quantity += quantity
 
-            if(name != 'Energy')
-                console.log(`Adding ${quantity} to ${name}. Total: ${resource.quantity}`);
-            
             if(resource.quantity > resource.max) { 
                 resource.quantity = resource.max
             }
         }
 
-        return { 
+        function removeResource(name: string, quantity: number) {
+            const resource = resources[name]
+            resource.quantity -= quantity
+
+            if(resource.quantity < 0) { resource.quantity = 0 }
+        }
+
+        return {
             resources, 
-            producers: baseProducers, 
-            getProducersOf, 
+            baseProducers,
+
+            getProducersOf,
+            getConsumersOf,
+            getConvertersOf,
+            canConvert,
+
             updateResources, 
-            addResource 
+            addResource,
+            removeResource
         }
     }
 )

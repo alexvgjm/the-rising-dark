@@ -12,6 +12,7 @@ const ttStore = useTooltipsStore()
 const imgSrc =
     new URL(`/src/assets/icons/${safename}.svg`, import.meta.url).href
 
+
 function mouseMoveHandler(event: MouseEvent) {
     const position = {
         x: event.clientX + 10,

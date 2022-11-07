@@ -20,8 +20,12 @@ function hoveringHandler(event: {currentTarget: EventTarget | null}) {
         x: bRect.left - (remToPx(20) - bRect.width) / 2,
         y: bRect.bottom + 10 - button.scrollTop
     }
-    ttStore.showSimpleTooltip(
-        props.name, props.description, props.metadescription, position)
+    ttStore.showSimpleTooltip({
+        type: 'simple',
+        title: props.name,
+        description: props.description,
+        metadescription: props.metadescription,
+    }, position)
 }
 </script>
 

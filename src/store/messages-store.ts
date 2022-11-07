@@ -18,13 +18,11 @@ export const useMessagesStore = defineStore(
                 messages.length = 50
             }
         }
-
-        for(let i = 0; i < 200; i++) {
-            addMessage(
-                'Neural network operative. Welcome, overseer.',
-                'system'
-            )
-        }
+        
+        addMessage(
+            '👾 Welcome overseer. The Witch King has given you the task of turning the devastated lands into an efficient human farm. If you fail... to be honest I don\'t think there\'s anything worse than being in this boring place.',
+            'system'
+        )
 
 
         return { messages }

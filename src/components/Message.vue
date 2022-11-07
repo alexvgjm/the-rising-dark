@@ -23,6 +23,6 @@ defineProps<Message>()
 }
 
 .message--system {
-    color: var(--color-success);
+    color: var(--color-msg-system);
 }
 </style>

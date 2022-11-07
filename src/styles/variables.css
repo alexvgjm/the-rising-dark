@@ -2,7 +2,7 @@
     /******************************************************************************/
     /*                               COLOR PALETTES                               */
     /******************************************************************************/
-        --color-resource-energy: hsl(51, 100%, 50%);
+        --color-resource-souls: hsl(51, 100%, 50%);
     
         --color-warning-light:  hsl(63, 100%, 88%);
         --color-warning:        hsl(64, 82%, 68%);
@@ -29,7 +29,7 @@
         --color-second-darker    : hsl(340, 56%, 25%);
         --color-second-darkest   : hsl(340, 56%, 12%);
     
-        --color-third-lighter    : hsl(240, 50%, 95%);
+        --color-third-lightest    : hsl(240, 50%, 95%);
         --color-third-lighter    : hsl(240, 35%, 80%);
         --color-third-light      : hsl(240, 30%, 70%);
         --color-third            : hsl(240, 28%, 55%);
@@ -52,6 +52,7 @@
         --color-shadow-a80 : hsla(0, 0%, 8%, 0.8);
 
         --color-unaffordable: var(--color-danger);
+        --color-msg-system: rgb(220, 193, 255);
     
     /******************************************************************************/
     /*                                CUSTOM UNITS                                */
