@@ -22,8 +22,8 @@ const affordable = computed(()=>{
     })
 })
 
-function hoveringHandler(event: {target: EventTarget | null}) {
-    const button = event.target as HTMLButtonElement
+function hoveringHandler(event: {currentTarget: EventTarget | null}) {
+    const button = event.currentTarget as HTMLButtonElement
     const bRect = button.getBoundingClientRect()
 
     const position = {

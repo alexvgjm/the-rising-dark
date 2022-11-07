@@ -11,17 +11,9 @@ const ttStore = useTooltipsStore()
 
 const button = ref<HTMLButtonElement>()
 
-function mouseOverHandler(event: MouseEvent) {
-    const position = {
-        x: event.clientX + 10,
-        y: event.clientY + 10
-    }
-    ttStore.showSimpleTooltip(
-        props.name, props.description, props.metadescription, position)
-}
 
-function focusHandler(event: FocusEvent) {
-    const button = event.target as HTMLButtonElement
+function hoveringHandler(event: {currentTarget: EventTarget | null}) {
+    const button = event.currentTarget as HTMLButtonElement
     const bRect = button.getBoundingClientRect()
 
     const position = {
@@ -36,8 +28,8 @@ function focusHandler(event: FocusEvent) {
 
 <template>
     <button ref="button"
-            @mousemove="mouseOverHandler"
-            @focus="(event)=>focusHandler(event)"
+            @mousemove="hoveringHandler"
+            @focus="hoveringHandler"
             @blur="ttStore.hideTooltip"
             @mouseleave="ttStore.hideTooltip"
             @click="$emit('click')"
