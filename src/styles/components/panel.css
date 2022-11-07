@@ -1,0 +1,4 @@
+.panel {
+    background: var(--color-background-dark);
+    padding: var(--space) var(--x2-space);
+}

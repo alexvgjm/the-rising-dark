@@ -1,0 +1,143 @@
+* {
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    text-shadow: 0.05em 0.05em black;
+    letter-spacing: 0.1ch;
+}
+
+body {
+    background: var(--color-background-darky);
+    color: var(--color-font-primary);
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    font-weight: 350;
+}
+
+
+h1, h2, h3, h4, h5, h6 {
+    font-weight: bold;
+    color: var(--color-second);
+}
+h1:not(:first-child),
+h2:not(:first-child),
+h3:not(:first-child),
+h4:not(:first-child),
+h5:not(:first-child),
+h6:not(:first-child) {
+    margin-top: var(--space);
+}
+
+ul, ol {
+    list-style-position: inside;
+    margin-top: var(--space);
+}
+
+li {
+    margin-top: var(--h-space);
+    margin-left: 1rem;
+}
+
+a {
+    color: var(--color-second);
+    text-decoration: none;
+}
+
+p {
+    margin-top: var(--space);
+}
+
+h1 + p,
+h2 + p,
+h3 + p,
+h4 + p,
+h5 + p,
+h6 + p {
+    margin-top: var(--q-space);
+}
+
+strong, em {
+    color: var(--color-second-lightest);
+}
+
+main {
+    width: 100%;
+    display: flex;
+}
+
+pre {
+    margin-top: var(--space);
+    background: var(--color-background-darker);
+    padding: var(--space);
+    margin: var(--space) 0;
+}
+pre code {
+    font-family: 'Courier New', Courier, monospace;
+    letter-spacing: normal;
+}
+
+figcaption {
+    font-style: italic;
+    text-align: center;
+    color: var(--color-primary-lighter);
+    font-weight: 400;
+}
+
+
+table {
+    border-collapse: separate;
+    border-spacing: 0;
+    margin: var(--space) auto;
+}
+caption {
+    border: var(--border-size) var(--table-border-style) var(--table-border-color);
+    border-radius: var(--q-space) var(--q-space) 0 0;
+    font-weight: bold;
+    padding: var(--h-space);
+}
+
+th:not(:empty), td {
+    border-bottom: var(--border-size) var(--table-border-style) var(--table-border-color);
+    border-right: var(--border-size) var(--table-border-style) var(--table-border-color);
+    padding: var(--h-space);
+}
+
+td:first-child,
+th:first-child {
+    border-left: var(--border-size) var(--table-border-style) var(--table-border-color);
+}
+
+thead > tr:first-child > th {
+    border-top: var(--border-size) var(--table-border-style) var(--table-border-color);
+}
+
+thead > tr:first-child > th:first-child {
+    border-radius: var(--q-space) 0 0 0;
+}
+thead > tr:first-child > th:last-child {
+    border-radius: 0 var(--q-space) 0 0;
+}
+
+
+
+thead,
+caption {
+    background: var(--table-bg-header);
+}
+
+tbody > tr:nth-child(even) > th {
+    background: var(--table-bg-even-row-header);
+}
+tbody > tr:nth-child(odd) > th {
+    background: var(--table-bg-odd-row-header);
+}
+
+tbody > tr:nth-child(even) {
+    background: var(--table-bg-even-row);
+}
+tbody > tr:nth-child(odd) {
+    background: var(--table-bg-odd-row);
+}
+
