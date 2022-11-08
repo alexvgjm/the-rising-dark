@@ -62,17 +62,7 @@ strong, em {
     color: var(--color-second-lightest);
 }
 
-#app {
-    min-height: 100vh;
-    display: flex;
-}
 
-main {
-    padding: var(--space);
-    width: 100%;
-    display: flex;
-    align-items: stretch;
-}
 
 pre {
     margin-top: var(--space);

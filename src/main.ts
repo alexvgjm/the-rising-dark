@@ -18,7 +18,8 @@ const router = createRouter({
     linkActiveClass: 'main-nav__link--active'
 })
 
-createApp(App)
-.use(router)
-.use(createPinia())
-.mount('#app')
+const app = createApp(App)
+            .use(router)
+            .use(createPinia())
+            .provide('version', '0.0.003')
+            .mount('#app')
