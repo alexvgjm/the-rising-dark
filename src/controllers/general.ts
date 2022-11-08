@@ -25,6 +25,4 @@ export function start() {
             eachSecond()
         }
     }, 100)
-    
-    resStore.addResource('Souls', 10)
 }
