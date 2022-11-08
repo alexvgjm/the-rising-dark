@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import ResourcesPanel from './panels/ResourcesPanel.vue';
-import World from './panels/World.vue';
+import Main from './panels/Main.vue';
 import MessagesPanel from './panels/MessagesPanel.vue';
 import SimpleTooltip from './components/Tooltips/SimpleTooltip.vue';
 import { onMounted } from 'vue';
@@ -16,13 +16,12 @@ onMounted(()=>{
 </script>
 
 <template>
-
+  <SimpleTooltip />
+  <BuildingTooltip />
+  <ResourceTooltip />
   <main>
-    <SimpleTooltip />
-    <BuildingTooltip />
-    <ResourceTooltip />
     <ResourcesPanel />
-    <World />
+    <Main />
     <MessagesPanel />
   </main>
 

@@ -1,5 +1,6 @@
 import { useResourcesStore } from "../store/resources-store";
 import mitt from "mitt";
+import { DemonsEvents } from "./events-demons";
 
 const oneTimeEmitters = {
     'firstSoul': ()=>resStore.resources['Souls'].quantity > 0,
@@ -7,14 +8,15 @@ const oneTimeEmitters = {
 }
 
 export type EventsDefinitions = 
-    {[K in keyof typeof oneTimeEmitters]: boolean} &
-    {
+    {[K in keyof typeof oneTimeEmitters]: boolean}
+    & DemonsEvents
+    & {
         'starvation': number,
-        'humanDeaths': number
+        'humanDeaths': {quantity: number, reason: string}
     }
 
 let resStore: ReturnType<typeof useResourcesStore>
-export function startEventsEmitterModule() {
+export function startEventsModule() {
     resStore = useResourcesStore()
 }
 

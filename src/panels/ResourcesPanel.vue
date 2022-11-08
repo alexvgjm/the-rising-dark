@@ -28,6 +28,7 @@ const resStore = useResourcesStore()
 <style>
 .resources {
     width: 25rem;
+    min-width: 25rem;
 }
 .resources__header {
     text-align: center;

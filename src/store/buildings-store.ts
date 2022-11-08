@@ -11,7 +11,7 @@ export const useBuildingsStore = defineStore(
         const buildings: {[key: string]: Building} = reactive<{[key: string]: Building}>({
             'Human pits': {
                 name: 'Human pits',
-                description: '👨‍👩‍👧‍👦 More humans! (+0.01/s) for food 🍗 (-0.25/s).',
+                description: '👨‍👩‍👧‍👦 More humans! (+0.01/s) for food 🐀 (-0.25/s).',
                 metadescription: 'Fork is work, porks!',
                 level: 0,
                 buildCost: [
@@ -23,12 +23,26 @@ export const useBuildingsStore = defineStore(
             'Jails': {
                 name: 'Jails',
                 description: '👨‍👩‍👧‍👦 More humans capacity! (+1 max humans)',
-                metadescription: "In reality, none would try to escape, after all there is nowhere to go.",
+                metadescription: "None would try to escape, there is nowhere to go.",
                 level: 0,
                 buildCost: [{
                         resource: 'Stones',
                         quantity: ()=>10 + 10 * buildings['Jails'].level * 1.02,
                 }]
+            },
+            'Imp hut': {
+                name: 'Imp hut',
+                description: 'More 😈 Imps capacity (+1 max imps)',
+                metadescription: '',
+                buildCost: [{
+                    resource: 'Stones',
+                    quantity: ()=>80 + 50 * buildings['Imp hut'].level * 1.08
+                },{
+                    resource: 'Souls',
+                    quantity: ()=>20 + 30 * buildings['Imp hut'].level * 1.08
+                }],
+                level: 0,
+                requires: [{type: 'achievement', name: 'First demon'}]
             }
         })
 
@@ -51,7 +65,7 @@ export const useBuildingsStore = defineStore(
             'Human pits': [
                 {
                     multiplier: () => buildings['Human pits'].level,
-                    description: 'Humans pits activity',
+                    description: 'Human pits activity',
                     inputs: {
                         'Food': 0.25
                     },

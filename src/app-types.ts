@@ -39,18 +39,47 @@ export type Message = {
     hour: string
 }
 
-export type Requirement = {
+interface BaseUnlockRequirement {
     type: 'building' | 'research' | 'achievement',
-    name: string,
-    level?: number
+    name: string
 }
+
+interface UnlockBuildingReq extends BaseUnlockRequirement {
+    type: 'building',
+    level: number
+}
+
+interface UnlockResearchReq extends BaseUnlockRequirement {
+    type: 'research'
+}
+
+interface UnlockAchievementReq extends BaseUnlockRequirement {
+    type: 'achievement'
+}
+
+export type UnlockRequirement = UnlockBuildingReq 
+                                | UnlockResearchReq 
+                                | UnlockAchievementReq
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 export type Building = {
     name: string,
     description: string,
     metadescription: string,
     level: number,
-    requires?: Requirement[],
+    requires?: BaseUnlockRequirement[],
 
     buildCost: {
         resource: string,

@@ -8,11 +8,6 @@ export type TooltipSectionContent = {
     text: string
 }
 
-export type TooltipSection = {
-    type: 'costs' | 'description' | 'metadescription' | 'production',
-    content: TooltipSectionContent[]
-}
-
 interface Tooltip {
     type: 'simple' | 'building' | 'resource'
     title: string

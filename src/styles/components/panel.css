@@ -1,4 +1,13 @@
 .panel {
     background: var(--color-background-dark);
-    padding: var(--space) var(--x2-space);
+    padding: var(--space) var(--x2-space) var(--x1_5-space) var(--x2-space);
+}
+
+
+.panel:not(:first-child) {
+    border-top: var(--border-size) solid var(--color-background-darkest);
+}
+
+.panel__header {
+    margin-bottom: var(--h-space);
 }

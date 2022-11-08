@@ -2,12 +2,13 @@ import { defineStore } from "pinia";
 import { computed, reactive } from "vue";
 import { Consumer, Converter, Producer, Resource } from "../app-types";
 import { useBuildingsStore } from "./buildings-store";
+import { useDemonsStore } from "./demons-store";
 
 
 export const useResourcesStore = defineStore(
     'resources',
     () => {
-        
+        const demonsStore = useDemonsStore()
         const buildingsStore = useBuildingsStore()
         const baseStorage = reactive<{ [key: string]: number }>({
             'Souls': 200,
@@ -34,7 +35,7 @@ export const useResourcesStore = defineStore(
             'Food': {
                 name: 'Food',
                 description: 'To feed humans and other creatures',
-                emoji: '🍗',
+                emoji: '🐀',
                 quantity: 0,
                 max: computed(()=>getStorageOf('Food')) as unknown as number
             },
@@ -78,8 +79,18 @@ export const useResourcesStore = defineStore(
                       .flat()
                       .filter(cons => cons.resource == resourceName)
 
-                
-            return [...fromResources, ...fromBuildings]
+            const fromDemonsConsumers: Consumer[] =
+                demonsStore.demons.map(d => d.profession.consumers)
+                                  .flat()
+                                  .filter(cons => cons.resource == resourceName)
+            
+            const fromDemonsUpkeeps: Consumer[] =
+                demonsStore.demons.map(d => d.upkeep)
+                                  .flat()
+                                  .filter(cons => cons.resource == resourceName)
+        
+            return [...fromResources, ...fromBuildings, 
+                    ...fromDemonsConsumers, ...fromDemonsUpkeeps]
         }
 
         function getProducersOf(resourceName: string): Producer[] {
@@ -101,7 +112,18 @@ export const useResourcesStore = defineStore(
                       .flat()
                       .filter(prod => prod.resource == resourceName)
 
-            return [...base, ...fromResources, ...fromBuildings]
+            // DEMONS
+            const fromDemons: Producer[] =
+                demonsStore.demons
+                           .map(d => d.profession.producers)
+                           .flat()
+                           .filter(prod => prod.resource == resourceName)
+
+
+            return [...base, 
+                    ...fromResources, 
+                    ...fromBuildings,
+                    ...fromDemons]
         }
 
         function getConvertersOf(resourceName: string): Converter[] {

@@ -1,13 +1,14 @@
+import { useDemonsStore } from "../store/demons-store";
 import { useResourcesStore } from "../store/resources-store";
-import { eachSecond, startEventsEmitterModule } from "./events-emission";
-import { startEventsListenerModule } from "./events-listeners";
+import { eachSecond, startEventsModule } from "./events";
+import { startGeneralEventsModule } from "./events-general";
 
 let timerInterval: number;
 let millisecondsAcc = 0;
 
 export function start() {
-    startEventsEmitterModule()
-    startEventsListenerModule()
+    startEventsModule()
+    startGeneralEventsModule()
 
     const resStore = useResourcesStore()
     let lastUpdate = Date.now()
@@ -24,4 +25,6 @@ export function start() {
             eachSecond()
         }
     }, 100)
+    
+    resStore.addResource('Souls', 10)
 }

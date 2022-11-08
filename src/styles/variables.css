@@ -13,13 +13,13 @@
         --color-danger-light:  hsl(0, 100%, 82%);
         --color-danger:        hsl(0, 79%, 55%);
     
-        --color-primary-lightest : hsl(175, 37%, 95%);
-        --color-primary-lighter  : hsl(175, 35%, 85%);
-        --color-primary-light    : hsl(175, 34%, 73%);
-        --color-primary          : hsl(175, 34%, 63%);
-        --color-primary-dark     : hsl(175, 38%, 45%);
-        --color-primary-darker   : hsl(175, 38%, 25%);
-        --color-primary-darkest  : hsl(175, 38%, 12%);
+        --color-primary-lightest : hsl(175, 17%, 95%);
+        --color-primary-lighter  : hsl(175, 15%, 85%);
+        --color-primary-light    : hsl(175, 14%, 73%);
+        --color-primary          : hsl(175, 14%, 63%);
+        --color-primary-dark     : hsl(175, 18%, 45%);
+        --color-primary-darker   : hsl(175, 18%, 25%);
+        --color-primary-darkest  : hsl(175, 18%, 12%);
     
         --color-second-lightest  : hsl(340, 75%, 95%);
         --color-second-lighter   : hsl(340, 50%, 85%);
@@ -38,7 +38,7 @@
         --color-third-darkest    : hsl(240, 28%, 15%);
     
         --color-background-a90    : hsla(240, 15%, 30%, 0.9);
-        --color-background         : hsl(240, 14%, 30%);
+        --color-background         : hsl(240, 14%, 24%);
         --color-background-dark    : hsl(240, 14%, 20%);
         --color-background-darky   : hsl(240, 13%, 12%);
         --color-background-darker  : hsl(240, 10%, 9%);
