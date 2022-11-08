@@ -25,4 +25,8 @@ defineProps<Message>()
 .message--system {
     color: var(--color-msg-system);
 }
+
+.message--system .message__text::before {
+    content: '👾 ';
+}
 </style>

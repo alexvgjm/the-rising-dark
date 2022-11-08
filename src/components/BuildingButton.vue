@@ -61,6 +61,7 @@ function clickHandler() {
 .building-button {
     padding: var(--em-space) var(--x2-space);
     position: relative;
+    margin-right: var(--space);
 }
 
 .building-button__level {

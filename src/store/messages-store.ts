@@ -20,11 +20,11 @@ export const useMessagesStore = defineStore(
         }
         
         addMessage(
-            '👾 Welcome overseer. The Witch King has given you the task of turning the devastated lands into an efficient human farm. If you fail... to be honest I don\'t think there\'s anything worse than being in this boring place.',
+            'Welcome overseer. The Witch King has given you the task of turning the devastated lands into an efficient human farm. If you fail... to be honest I don\'t think there\'s anything worse than being in this boring place.',
             'system'
         )
 
 
-        return { messages }
+        return { messages, addMessage }
     }
 )

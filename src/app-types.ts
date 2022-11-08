@@ -1,7 +1,13 @@
+import { ComputedRef } from "vue"
+
 export type Point = {
     x: number, y: number
 }
 
+export interface ResourceStorage {
+    resource: string,
+    storage: ()=>number
+}
 export interface Consumer {
     description: string,
     resource: string
@@ -62,12 +68,6 @@ export type Building = {
         base: number,
         factor: number
     }[]
-}
-
-/** Resource Producer of Resource */
-export type RPR = {
-    resource: 'Humans',
-    producers: Producer[]
 }
 
 export type ManualAction = {

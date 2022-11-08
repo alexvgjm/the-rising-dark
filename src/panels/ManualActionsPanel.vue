@@ -15,7 +15,7 @@ const manualActions: ManualActionAndEffect[] = [
         effect: ()=>{ resStore.addResource('Stones', 1) }
     },
     {
-        name: 'Gather rats & maggots', 
+        name: 'Gather rats', 
         description: 'Collect food for humans.',
         metadescription: '',
         effect: ()=>{ resStore.addResource('Food', 1) }

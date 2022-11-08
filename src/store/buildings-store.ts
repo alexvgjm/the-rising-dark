@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 import { reactive } from "vue";
-import { Building, Consumer, Converter, Producer } from "../app-types";
+import { Building, Consumer, Converter, Producer, ResourceStorage } from "../app-types";
 import { useResourcesStore } from "./resources-store";
 
 export const useBuildingsStore = defineStore(
@@ -19,6 +19,16 @@ export const useBuildingsStore = defineStore(
                     resource: 'Stones',
                     quantity: ()=>25 + 25 * buildings['Human pits'].level * 1.01,
                 }]
+            },
+            'Jails': {
+                name: 'Jails',
+                description: '👨‍👩‍👧‍👦 More humans capacity! (+1 max humans)',
+                metadescription: "In reality, none would try to escape, after all there is nowhere to go.",
+                level: 0,
+                buildCost: [{
+                        resource: 'Stones',
+                        quantity: ()=>10 + 10 * buildings['Jails'].level * 1.02,
+                }]
             }
         })
 
@@ -28,6 +38,13 @@ export const useBuildingsStore = defineStore(
 
         const buildingConsumptions: {[key: string]: Consumer[]} = {
 
+        }
+
+        const buildingStorage: {[key: string]: ResourceStorage[]} = {
+            'Jails': [{
+                resource: 'Humans',
+                storage: ()=> buildings['Jails'].level
+            }]
         }
 
         const buildingConverters: {[key: string]: Converter[]} = {
@@ -64,10 +81,11 @@ export const useBuildingsStore = defineStore(
 
             building.level++
         }
-        return { buildings, 
+        return {buildings, 
                 buildingsProductions, 
                 buildingConsumptions,
                 buildingConverters,
+                buildingStorage,
                 build }
     }
 )

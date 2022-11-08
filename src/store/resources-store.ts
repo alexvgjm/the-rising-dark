@@ -1,63 +1,62 @@
 import { defineStore } from "pinia";
-import { reactive } from "vue";
-import { Consumer, Converter, Producer, Resource, RPR } from "../app-types";
-import { calculateProduction } from "../controllers/utils";
+import { computed, reactive } from "vue";
+import { Consumer, Converter, Producer, Resource } from "../app-types";
 import { useBuildingsStore } from "./buildings-store";
-
-
-
-
 
 
 export const useResourcesStore = defineStore(
     'resources',
     () => {
+        
         const buildingsStore = useBuildingsStore()
+        const baseStorage = reactive<{ [key: string]: number }>({
+            'Souls': 200,
+            'Humans': 3,
+            'Food': 100,
+            'Stones': 100
+        })
+        
         const resources = reactive<{ [key: string]: Resource }>({
             'Souls': {
                 name: 'Souls',
                 description: 'Your reason for existing. Extracted from humans.',
                 emoji: '🟣',
-                quantity: 5,
-                max: 200
+                quantity: 0,
+                max: computed(()=>getStorageOf('Souls')) as unknown as number
             },
             'Humans': {
                 name: 'Humans',
                 description: 'Your main resource. Source of souls and fun.',
                 emoji: '👨‍👩‍👧‍👦',
                 quantity: 0,
-                max: 3
+                max: computed(()=>getStorageOf('Humans')) as unknown as number
             },
             'Food': {
                 name: 'Food',
-                description: 'To feed humans and other organisms.',
+                description: 'To feed humans and other creatures',
                 emoji: '🍗',
                 quantity: 0,
-                max: 100
+                max: computed(()=>getStorageOf('Food')) as unknown as number
             },
             'Stones': {
                 name: 'Stones',
                 description: 'A primitive way of physically exposing our might.',
                 emoji: '🪨',
                 quantity: 0,
-                max: 100
+                max: computed(()=>getStorageOf('Stones')) as unknown as number
             }
         })
 
-        const baseProducers = reactive<Producer[]>([
-            {
-                description: 'Base souls',
-                resource: 'Souls', 
-                quantity: ()=>1
-            }
-        ])
+
+
+        const baseProducers = reactive<Producer[]>([])
 
         const resourcesProducingResources = reactive<{[key: string]: Producer[]}>({
-            "Humans": [{
+            /*"Humans": [{
                 description: 'Souls from humans',
                 resource: 'Souls',
                 quantity: () => resources['Humans'].quantity * 0.5
-            }]
+            }]*/
         })
 
         const resourcesConsumingResources = reactive<{[key: string]: Consumer[]}>({
@@ -115,6 +114,23 @@ export const useResourcesStore = defineStore(
             return [...fromBuildings]
         }
 
+        function getStorageOf(resourceName: string): number {
+            const fromBuildings = 
+                Object.values(buildingsStore.buildingStorage)
+                  .flat()
+                  .filter(stg => stg.resource == resourceName)
+                  .reduce((acc, stg) => acc + stg.storage(), 0)
+            
+            
+            console.log(resourceName, 
+                baseStorage[resourceName], 
+                fromBuildings, 'Total: ', 
+                baseStorage[resourceName] + fromBuildings);
+            
+            return baseStorage[resourceName] + fromBuildings
+        }
+        
+
         function canConvert(converter: Converter) {
             const canAfford = Object
                 .entries(converter.inputs)
@@ -147,8 +163,11 @@ export const useResourcesStore = defineStore(
             
             Object.keys(resources).forEach(res => {
                 const total = getTotalProductionOf(res)
-                total < 0 ? removeResource(res, Math.abs(total) * dtFactor)
-                          : addResource(res, total * dtFactor)
+                if (total < 0) {
+                    removeResource(res, Math.abs(total) * dtFactor)
+                } else if (total > 0) {
+                    addResource(res, total * dtFactor)
+                }
                     
                 const converters = getConvertersOf(res)
                 converters.forEach(c => {
@@ -167,10 +186,12 @@ export const useResourcesStore = defineStore(
 
         function addResource(name: string, quantity: number) {
             const resource = resources[name]
+            
+
             resource.quantity += quantity
 
             if(resource.quantity > resource.max) { 
-                resource.quantity = resource.max
+                resource.quantity = resource.max as number
             }
         }
 
@@ -189,6 +210,8 @@ export const useResourcesStore = defineStore(
             getConsumersOf,
             getConvertersOf,
             canConvert,
+
+            getStorageOf,
 
             updateResources, 
             addResource,

@@ -29,7 +29,7 @@
     display: none;
 }
 
-.tooltip__section--metadescription {
+.tooltip__metadescription {
     font-style: italic;
     opacity: 0.6;
 }

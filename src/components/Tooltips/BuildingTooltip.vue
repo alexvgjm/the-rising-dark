@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { useResourcesStore } from '../../store/resources-store';
-import { useTooltipsStore, BuildingTooltip } from '../../store/tooltip-store';
+import { useTooltipsStore } from '../../store/tooltip-store';
 
 const tt = useTooltipsStore()
 const resStore = useResourcesStore()
