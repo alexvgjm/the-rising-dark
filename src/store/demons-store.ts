@@ -10,6 +10,10 @@ export type Profession = {
     name: string,
     description: string,
     metadescription: string,
+    experience: {
+        when: 'time' | 'success',
+        amount: number
+    },
     producers: Producer[],
     consumers: Consumer[],
     converters: Converter[]
@@ -53,8 +57,12 @@ export const useDemonsStore = defineStore(
         const professions: {[key: string]: Profession} = {
             'Rat hunter': {
                 name: 'Rat hunter',
-                description: 'Gather 🐀 food (+0.05/s) per level. Sometimes kill humans. Brings XP over time.',
+                description: 'Gather 🐀 food (+0.05/s) per level. Sometimes kill humans. Brings some experience over time.',
                 metadescription: `It's not so easy to distinguish humans from rats.`,
+                experience: {
+                    when: 'time',
+                    amount: 1
+                },
                 producers: [{
                     resource: 'Food',
                     description: 'Rat hunting',

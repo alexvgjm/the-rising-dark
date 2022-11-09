@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { computed } from 'vue';
 import { ManualAction } from '../app-types';
 import ActionButton from '../components/ActionButton.vue';
 import BuildingButton from '../components/BuildingButton.vue';
@@ -24,6 +25,11 @@ const manualActions: ManualActionAndEffect[] = [
 ]
 
 type ManualActionAndEffect = ManualAction & {effect: ()=>void}
+
+const unlockedBuildings = computed(()=>
+    Object.values(buildingStore.buildings)
+          .filter(b => b.unlock)
+, {onTrigger: (e)=>console.log("TRIGGER")})
 const resStore = useResourcesStore()
 </script>
 
@@ -39,13 +45,15 @@ const resStore = useResourcesStore()
                           v-bind="mAction" />
     </section>
     
-    <section class="panel building">
-        <header class="panel__header building__header">
-            <h1>Buildings</h1>
+    <section class="panel population">
+        <header class="panel__header population__header">
+            <h1>Population</h1>
         </header>
 
-        <BuildingButton v-for="building in buildingStore.buildings"
+        <BuildingButton v-for="building in unlockedBuildings"
                         v-bind="building"/>
+
+        
     </section>
 </template>
 

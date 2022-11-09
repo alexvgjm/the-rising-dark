@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, ref } from '@vue/reactivity';
+import { toMaxFix } from '../controllers/utils';
 
 type DisplayMode = 'percent' | 'none' | 'valuesFromZero' | 'values'
 const props = withDefaults(defineProps<{
@@ -19,17 +20,16 @@ const props = withDefaults(defineProps<{
 const oMax     = computed(()=>props.max - props.min)
 const oCurrent = computed(()=>props.current - props.min)
 const percent  = computed(()=>
-    (oCurrent.value/oMax.value * 100).toFixed(0) + '%'
+    toMaxFix(oCurrent.value/oMax.value * 100,1) + '%'
 )
-
 const hovering = ref(false)
 
 const barText = computed(()=> {
     const displays = {
         'none': '',
         'percent': percent.value,
-        'valuesFromZero': `${oCurrent.value} / ${oMax.value}`,
-        'values': `${props.current} / ${props.max}`
+        'valuesFromZero': `${toMaxFix(oCurrent.value,1)} / ${toMaxFix(oMax.value,1)}`,
+        'values': `${toMaxFix(props.current,1)} / ${toMaxFix(props.max,1)}`
     }
 
     return displays[hovering.value ? props.hoverText : props.defaultText]

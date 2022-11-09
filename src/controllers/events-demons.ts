@@ -4,7 +4,7 @@ import { events } from "./events"
 import { randomInt } from "./utils"
 
 export type DemonsEvents = {
-    'ratHunterKillHumans': number
+    'ratHunting': number
 }
 
 let resStore: ReturnType<typeof useResourcesStore>
@@ -15,7 +15,7 @@ export function startDemonsEventsEmitterModule() {
 }
 
 export const eachSecondDemonsEvents = {
-    'ratHunterKillHumans': ()=>{
+    'ratHunting': ()=>{
         const ratHunters = 
             demonsStore.demons
                    .filter(d => d.profession.name == 'Rat hunter')
@@ -24,6 +24,9 @@ export const eachSecondDemonsEvents = {
         ratHunters.forEach(rh => {
             if (randomInt(1, 300) < Math.min(rh.level, 10)) {
                 humansToKill++
+                rh.experience += 0.1
+            } else {
+                rh.experience += 0.01
             }
         })
 
@@ -31,7 +34,7 @@ export const eachSecondDemonsEvents = {
             Math.floor(Math.min(resStore.resources['Humans'].quantity, humansToKill))
 
         if (humansToKill > 0) {
-            events.emit('ratHunterKillHumans', humansToKill)
+            events.emit('ratHunting', humansToKill)
             events.emit('humanDeaths', {quantity: humansToKill, reason: 'Rat hunter'})
         }
     }

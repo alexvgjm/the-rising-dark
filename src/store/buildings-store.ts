@@ -1,13 +1,15 @@
 import { defineStore } from "pinia";
-import { reactive } from "vue";
+import { computed, reactive } from "vue";
 import { Building, Consumer, Converter, Producer, ResourceStorage } from "../app-types";
 import { DemonCapacity } from "./demons-store";
 import { useResourcesStore } from "./resources-store";
+import { useStatsStore } from "./stats-store";
 
 export const useBuildingsStore = defineStore(
     'buildings',
     () => {
         const resStore = useResourcesStore()
+        const statsStore = useStatsStore()
 
         const buildings: {[key: string]: Building} = reactive<{[key: string]: Building}>({
             'Human pit': {
@@ -19,7 +21,20 @@ export const useBuildingsStore = defineStore(
                 {
                     resource: 'Stones',
                     quantity: ()=>25 + 25 * buildings['Human pit'].level * 1.01,
-                }]
+                }],
+                unlock: true
+            },
+            'Sacrificial pit': {
+                name: 'Sacrificial pit',
+                description: 'Sacrifice 1 👨‍👩‍👧‍👦 human every 10 seconds to get 🟣 souls.',
+                metadescription: 'Today, to the pit to die!',
+                level: 0,
+                buildCost: [
+                {
+                    resource: 'Stones',
+                    quantity: ()=>25 + 25 * buildings['Human pit'].level * 1.01,
+                }],
+                unlock: computed(()=>statsStore.achievements['First demon'].achieved) as unknown as boolean
             },
             'Jail': {
                 name: 'Jail',
@@ -29,7 +44,8 @@ export const useBuildingsStore = defineStore(
                 buildCost: [{
                         resource: 'Stones',
                         quantity: ()=>10 + 10 * buildings['Jail'].level * 1.02,
-                }]
+                }],
+                unlock: true
             },
             'Imp hut': {
                 name: 'Imp hut',
@@ -43,7 +59,7 @@ export const useBuildingsStore = defineStore(
                     quantity: ()=>20 + 30 * buildings['Imp hut'].level * 1.08
                 }],
                 level: 0,
-                requires: [{type: 'achievement', name: 'First demon'}]
+                unlock: computed(()=>statsStore.achievements['First demon'].achieved) as unknown as boolean
             }
         })
 

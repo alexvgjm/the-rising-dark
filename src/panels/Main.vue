@@ -10,9 +10,9 @@ const statsStore = useStatsStore()
 <template>
     <section class="panel world">
         <nav class="main-nav">
-            <RouterLink class="main-nav__link" to="/">Buildings</RouterLink>
+            <RouterLink class="main-nav__link" to="/">🌇 Buildings</RouterLink>
             <RouterLink v-if="statsStore.achievements['First demon'].achieved" 
-                    class="main-nav__link" to="/demons">Demons</RouterLink>
+                    class="main-nav__link" to="/demons">👹 Demons</RouterLink>
         </nav>
 
 
