@@ -2,15 +2,18 @@ import { useResourcesStore } from "../store/resources-store";
 import { events } from "./events";
 import { useMessagesStore } from "../store/messages-store";
 import { useDemonsStore } from "../store/demons-store";
+import { useStatsStore } from "../store/stats-store";
 
 let resStore: ReturnType<typeof useResourcesStore>
 let msgStore: ReturnType<typeof useMessagesStore>
 let demonStore: ReturnType<typeof useDemonsStore>
+let statsStore: ReturnType<typeof useStatsStore>
 
 export function startGeneralEventsModule() {
     resStore = useResourcesStore()
     msgStore = useMessagesStore()
     demonStore = useDemonsStore()
+    statsStore = useStatsStore()
 }
 
 events.on('starvation', (threshold)=> {
@@ -52,7 +55,9 @@ events.on('fiveSouls', ()=> {
         'system')
     events.off('fiveSouls')
     oneTimeEvents['fiveSouls'] = true
+    statsStore.achievements['First demon'].achieved = true
 })
+
 
 
 const oneTimeEvents = {

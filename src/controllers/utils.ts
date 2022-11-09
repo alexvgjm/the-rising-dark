@@ -6,6 +6,22 @@ export function calculateProduction(level: number, base: number, factor: number)
     return base * level * factor
 }
 
+function test() {
+    for(let i = 0; i < 10; i++) {
+        const xp = experienceToReachLevel(i)
+        const lvl = levelFromExp(xp)
+        console.log(i + "\t" + xp + "\t" + lvl);
+    }
+}
+
+export function experienceToReachLevel(level: number) {
+    return Math.floor( Math.pow((level-1), 1.5) * 50)
+}
+
+export function levelFromExp(xp: number) {
+    return Math.floor( Math.pow(xp / 50, 1/1.5) + 1)
+}
+
 export function remToPx(rem: number) {
     return rem * parseFloat(getComputedStyle(document.documentElement).fontSize)
 }

@@ -1,6 +1,9 @@
 <script lang="ts" setup>
 import { RouterLink, RouterView } from "vue-router";
+import { useStatsStore } from "../store/stats-store";
 
+
+const statsStore = useStatsStore()
 </script>
 
 
@@ -8,7 +11,8 @@ import { RouterLink, RouterView } from "vue-router";
     <section class="panel world">
         <nav class="main-nav">
             <RouterLink class="main-nav__link" to="/">Buildings</RouterLink>
-            <RouterLink class="main-nav__link" to="/demons">Demons</RouterLink>
+            <RouterLink v-if="statsStore.achievements['First demon'].achieved" 
+                    class="main-nav__link" to="/demons">Demons</RouterLink>
         </nav>
 
 
@@ -51,7 +55,7 @@ import { RouterLink, RouterView } from "vue-router";
     color: var(--color-second);
     font-size: var(--big-font-size);
     border-color: var(--color-second);
-    transform: scale(1.02);
+    transform: scale(1.02) translateY(0.1rem);
     border-bottom-color: transparent;
 }
 

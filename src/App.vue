@@ -15,9 +15,6 @@ const version = inject('version')
 </script>
 
 <template>
-  <SimpleTooltip />
-  <BuildingTooltip />
-  <ResourceTooltip />
   <header class="game__header panel">
     <h1 class="game__title">The Rising Dark</h1>
     <p class="game__subtitle">An unlucky dark elf simulator</p>
@@ -29,6 +26,10 @@ const version = inject('version')
     <Main />
     <MessagesPanel />
   </main>
+  
+  <SimpleTooltip />
+  <BuildingTooltip />
+  <ResourceTooltip />
 </template>
 
 <style>

@@ -1,5 +1,6 @@
 @import 'variables.css';
 @import 'base.css';
+@import 'animations.css';
 
 @import './components/panel.css';
 @import './components/buttons.css';

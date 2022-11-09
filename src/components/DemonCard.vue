@@ -1,8 +1,9 @@
 <script lang="ts" setup>
-import { ref } from 'vue';
-import { remToPx } from '../controllers/utils';
+import { computed, ref } from 'vue';
+import { experienceToReachLevel, remToPx } from '../controllers/utils';
 import { Demon, DemonType } from '../store/demons-store';
 import { useTooltipsStore } from '../store/tooltip-store';
+import ProgressBar from './ProgressBar.vue';
 
 const props = defineProps<Demon>()
 
@@ -14,6 +15,9 @@ const demonEmojis: {[key in DemonType]: string} = {
 }
 
 const profDiv = ref<HTMLElement>()
+
+const minExp = computed(()=>experienceToReachLevel(props.level))
+const maxExp = computed(()=>experienceToReachLevel(props.level+1))
 
 function professionHover() {
     const bRect = profDiv.value!.getBoundingClientRect()
@@ -38,6 +42,11 @@ function professionHover() {
             <h1 class="demon__name">{{demonEmojis[type]}} {{name}}</h1>
             <div class="demon__type">{{type}} <span class="demon__level">Level {{level}}</span></div>
         </header>
+
+        <ProgressBar class="demon__experience-bar"
+                     :min="minExp" :max="maxExp" 
+                     :current="experience">Next level</ProgressBar>
+
         <div class="demon__profession" ref="profDiv"
              @mousemove="professionHover"
              @focus="professionHover"
@@ -58,22 +67,35 @@ function professionHover() {
     box-shadow: var(--default-box-shadow);
     background: var(--color-background);
     border-radius: var(--border-radius);
+    margin-top: var(--space);
+    min-width: 20rem;
 }
 
 .demon__profession {
-    background: var(--color-background-darker);
     display: flex;
     justify-content: center;
     align-items: center;
+
+    width: fit-content;
+    margin-top: var(--h-space);
+    font-size: var(--lesser-font-size);
     padding: var(--q-space) var(--space);
-    user-select: none;
     border-radius: var(--border-radius);
+    
+    background: var(--color-background-darker);
+    user-select: none;
 }
 
 .demon__header {
+    display: flex;
+    justify-content: space-between;
     margin-bottom: var(--h-space);
     padding-bottom: var(--h-space);
     border-bottom: var(--border-size) solid var(--color-background-darkest);
+}
+
+.demon__experience-bar {
+    font-size: var(--lesser-font-size);
 }
 
 .demon__type,

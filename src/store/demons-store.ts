@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
 import { reactive, Ref, ref } from "vue";
 import { Consumer, Converter, Producer } from "../app-types";
-import { randomInt, randomPick, shuffle } from "../controllers/utils";
+import { levelFromExp, randomInt, randomPick, shuffle } from "../controllers/utils";
 
 
 export type Profession = {
@@ -18,10 +18,11 @@ export type DemonType = 'Imp' | 'Grunt'
 export interface Demon {
     type: DemonType,
     name: string,
-    level: number,
     profession: Profession,
     upkeep: Consumer[],
-    loyalty: number
+    loyalty: number,
+    experience: number,
+    get level(): number
 }
 
 const namePool = {
@@ -37,10 +38,11 @@ export const useDemonsStore = defineStore(
     () => {
         const demons = reactive<Demon[]>([])
 
+
         const professions: {[key: string]: Profession} = {
             'Rat hunter': {
                 name: 'Rat hunter',
-                description: 'Gather 🐀 food (+0.05/s) per level. Sometimes kill humans.',
+                description: 'Gather 🐀 food (+0.05/s) per level. Sometimes kill humans. Brings XP over time.',
                 metadescription: `It's not so easy to distinguish humans from rats.`,
                 producers: [{
                     resource: 'Food',
@@ -82,8 +84,9 @@ export const useDemonsStore = defineStore(
             const professionName = randomPick(availableProfession[type])
 
             const newDemon: Demon = {
-                name, type, level: randomInt(1,3),
+                name, type, experience: randomInt(1, 150),
                 loyalty: randomInt(30, 70),
+                get level() { return levelFromExp(this.experience) },
                 profession: {...professions[professionName]},
                 upkeep: []
             }
