@@ -1,18 +1,19 @@
 <script setup lang="ts">
 import { computed, ref } from '@vue/reactivity';
 
+type DisplayMode = 'percent' | 'none' | 'valuesFromZero' | 'values'
 const props = withDefaults(defineProps<{
     current: number,
     max: number,
     min: number,
-    showPercent?: boolean,
-    fromZero?: boolean
+    defaultText?: DisplayMode
+    hoverText?: DisplayMode
 }>(), {
     min: 0,
     max: 100,
     current: 0,
-    showPercent: false,
-    fromZero: true
+    defaultText: 'percent',
+    hoverText: 'valuesFromZero'
 })
 
 const oMax     = computed(()=>props.max - props.min)
@@ -24,16 +25,15 @@ const percent  = computed(()=>
 const hovering = ref(false)
 
 const barText = computed(()=> {
-    if (hovering.value == props.showPercent) {
-        return percent.value
+    const displays = {
+        'none': '',
+        'percent': percent.value,
+        'valuesFromZero': `${oCurrent.value} / ${oMax.value}`,
+        'values': `${props.current} / ${props.max}`
     }
 
-    return props.fromZero ? `${oCurrent.value} / ${oMax.value}`
-                          : `${props.current} / ${props.max}`
+    return displays[hovering.value ? props.hoverText : props.defaultText]
 })
-
-
-
 </script>
 
 <template>

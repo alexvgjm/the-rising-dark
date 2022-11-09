@@ -12,6 +12,8 @@
 
         --color-danger-light:  hsl(0, 100%, 82%);
         --color-danger:        hsl(0, 79%, 55%);
+        --color-danger-dark:   hsl(0, 59%, 25%);
+        --color-danger-darkest:   hsl(0, 59%, 10%);
     
         --color-primary-lightest : hsl(175, 17%, 95%);
         --color-primary-lighter  : hsl(175, 15%, 85%);
@@ -62,6 +64,7 @@
         --max-font-size   : 2rem;
         --big-font-size   : 1.5rem;
         --1_25x-font-size : 1.25rem;
+        --biggy-font-size : 1.1rem;
         --font-size       : 1rem;
         --lesser-font-size: 0.8rem;
         --small-font-size : 0.66rem;

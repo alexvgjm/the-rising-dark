@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import { computed, ref, watch } from 'vue';
+import { computed, ref } from 'vue';
 import { Building } from '../app-types';
-import { calculateCostByLevel, remToPx } from '../controllers/utils';
+import { getTooltipPositionForElement } from '../controllers/utils';
 import { useBuildingsStore } from '../store/buildings-store';
 import { useResourcesStore } from '../store/resources-store';
 import { useTooltipsStore } from '../store/tooltip-store';
@@ -23,13 +23,10 @@ const affordable = computed(()=>{
 })
 
 function hoveringHandler() {
-    const bRect = button.value!.getBoundingClientRect()
-
-    const position = {
-        x: bRect.left - (remToPx(20) - bRect.width) / 2,
-        y: bRect.bottom + 10 - button.value!.scrollTop
-    }
-    ttStore.showBuildingTooltip(props, position)
+    ttStore.showBuildingTooltip(
+        props, 
+        getTooltipPositionForElement(button.value!)
+    )
 }
 
 function clickHandler() {

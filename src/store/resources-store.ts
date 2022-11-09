@@ -20,7 +20,7 @@ export const useResourcesStore = defineStore(
         const resources = reactive<{ [key: string]: Resource }>({
             'Souls': {
                 name: 'Souls',
-                description: 'Your reason for existing. Extracted from humans.',
+                description: 'What you are looking for.',
                 emoji: '🟣',
                 quantity: 0,
                 max: computed(()=>getStorageOf('Souls')) as unknown as number

@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { ref } from 'vue';
-import { remToPx } from '../controllers/utils';
+import { getTooltipPositionForElement, remToPx } from '../controllers/utils';
 import { useTooltipsStore } from '../store/tooltip-store';
 import { ManualAction } from "../app-types";
 
@@ -13,19 +13,12 @@ const button = ref<HTMLButtonElement>()
 
 
 function hoveringHandler(event: {currentTarget: EventTarget | null}) {
-    const button = event.currentTarget as HTMLButtonElement
-    const bRect = button.getBoundingClientRect()
-
-    const position = {
-        x: bRect.left - (remToPx(20) - bRect.width) / 2,
-        y: bRect.bottom + 10 - button.scrollTop
-    }
     ttStore.showSimpleTooltip({
         type: 'simple',
         title: props.name,
         description: props.description,
         metadescription: props.metadescription,
-    }, position)
+    }, getTooltipPositionForElement(event.currentTarget as HTMLButtonElement))
 }
 </script>
 

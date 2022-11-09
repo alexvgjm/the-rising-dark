@@ -1,13 +1,16 @@
 <script lang="ts" setup>
 import { computed, ref } from 'vue';
-import { experienceToReachLevel, remToPx } from '../controllers/utils';
-import { Demon, DemonType } from '../store/demons-store';
+import { experienceToReachLevel, getTooltipPositionForElement, remToPx } from '../controllers/utils';
+import { Demon, DemonType, useDemonsStore } from '../store/demons-store';
 import { useTooltipsStore } from '../store/tooltip-store';
 import ProgressBar from './ProgressBar.vue';
 
-const props = defineProps<Demon>()
+const props = defineProps<{demon: Demon}>()
 
 const tt = useTooltipsStore()
+const demStore = useDemonsStore()
+
+const exiling = ref(false);
 
 const demonEmojis: {[key in DemonType]: string} = {
     'Imp': '😈',
@@ -15,44 +18,77 @@ const demonEmojis: {[key in DemonType]: string} = {
 }
 
 const profDiv = ref<HTMLElement>()
+const exileBtn = ref<HTMLElement>()
 
-const minExp = computed(()=>experienceToReachLevel(props.level))
-const maxExp = computed(()=>experienceToReachLevel(props.level+1))
+const minExp = computed(()=>experienceToReachLevel(props.demon.level))
+const maxExp = computed(()=>experienceToReachLevel(props.demon.level+1))
 
 function professionHover() {
-    const bRect = profDiv.value!.getBoundingClientRect()
-
-    const position = {
-        x: bRect.left - (remToPx(20) - bRect.width) / 2,
-        y: bRect.bottom + 10 - profDiv.value!.scrollTop
-    }
     tt.showSimpleTooltip({
         type: 'simple',
-        title: props.profession.name,
-        description: props.profession.description,
-        metadescription: props.profession.metadescription,
-    }, position)
+        title: props.demon.profession.name,
+        description: props.demon.profession.description,
+        metadescription: props.demon.profession.metadescription,
+    }, getTooltipPositionForElement(profDiv.value!))
 }
+
+function exileHover() {
+    tt.showSimpleTooltip({
+        type:'simple',
+        title:'Exile', 
+        description: 'Get rid of this demon.',
+        metadescription: 'How to exile an exile?'
+    }, getTooltipPositionForElement(exileBtn.value!))
+}
+
+function exileDemon() { demStore.exileDemon(props.demon) }
+
 </script>
 
 
 <template>
     <article class="demon">
         <header class="demon__header">
-            <h1 class="demon__name">{{demonEmojis[type]}} {{name}}</h1>
-            <div class="demon__type">{{type}} <span class="demon__level">Level {{level}}</span></div>
+            <h1 class="demon__name">{{demonEmojis[demon.type]}} {{demon.name}}</h1>
+            <div class="demon__type">{{demon.type}} <span class="demon__level">Level {{demon.level}}</span></div>
         </header>
 
         <ProgressBar class="demon__experience-bar"
                      :min="minExp" :max="maxExp" 
-                     :current="experience">Next level</ProgressBar>
+                     :default-text="'percent'"
+                     :hover-text="'valuesFromZero'"
+                     :current="demon.experience">Next level</ProgressBar>
 
-        <div class="demon__profession" ref="profDiv"
-             @mousemove="professionHover"
-             @focus="professionHover"
-             @mouseleave="tt.hideTooltip"
-             @blur="tt.hideTooltip">
-            {{profession.name}}
+        <ProgressBar class="demon__loyalty-bar"
+                     :min="0" :max="100"
+                     :default-text="'percent'"
+                     :hover-text="'percent'"
+                     :current="demon.loyalty">Loyalty</ProgressBar>
+        
+        <div class="demon__controls">
+            <div class="demon__profession" ref="profDiv"
+                @mousemove="professionHover" @focus="professionHover"
+                @mouseleave="tt.hideTooltip" @blur="tt.hideTooltip">
+                {{demon.profession.name}}
+            </div>
+
+            <button class="demon__exile-btn" ref="exileBtn"
+                @click="exiling = true"
+                @mousemove="exileHover" @focus="exileHover"
+                @mouseleave="tt.hideTooltip" @blur="tt.hideTooltip"
+            >Exile</button>
+        </div>
+
+        <div v-if="exiling" 
+            @mouseleave="exiling=false"
+            class="demon__exile-modal">
+            <h2>Exile {{demon.name}}</h2>
+            <div class="demon__exile-answers">
+                <button @click="exileDemon"
+                        class="demon__confirm-exile-btn">I'm sure, exile</button>
+                <button @click="exiling = false"
+                        class="demon__forgive-exile-btn">Forgive</button>
+            </div>
         </div>
     </article>
 </template>
@@ -63,12 +99,31 @@ function professionHover() {
     display: flex;
     flex-flow: column;
     width: fit-content;
+    position: relative;
     padding: var(--space);
     box-shadow: var(--default-box-shadow);
     background: var(--color-background);
     border-radius: var(--border-radius);
     margin-top: var(--space);
     min-width: 20rem;
+}
+.demon__exile-modal {
+    display: flex;
+    flex-flow: column;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    
+    background: var(--color-background-darkest-a75);
+    z-index: 1;
+}
+
+.demon__exile-answers {
+    margin-top: var(--space);
 }
 
 .demon__profession {
@@ -78,7 +133,6 @@ function professionHover() {
 
     width: fit-content;
     margin-top: var(--h-space);
-    font-size: var(--lesser-font-size);
     padding: var(--q-space) var(--space);
     border-radius: var(--border-radius);
     
@@ -94,11 +148,40 @@ function professionHover() {
     border-bottom: var(--border-size) solid var(--color-background-darkest);
 }
 
-.demon__experience-bar {
+.demon__experience-bar,
+.demon__loyalty-bar {
     font-size: var(--lesser-font-size);
 }
 
-.demon__type,
-.demon__level {
+.demon__loyalty-bar {
+    --color-progress-bar: var(--color-third-darkest);
+    --color-progress-bar__filler: var(--color-third-dark);
+    --color-progress-bar__text: var(--color-third-lightest);
 }
+
+.demon__exile-btn {
+    margin-left: auto;
+    padding: var(--q-space) var(--space);
+}
+
+.demon__exile-btn,
+.demon__confirm-exile-btn {
+    background: var(--color-danger-darkest);
+    border-color: var(--color-second);
+    color: var(--color-danger-light);
+}
+
+.demon__forgive-exile-btn {
+    margin-left: var(--h-space);
+}
+
+.demon__exile-btn:hover {
+    background: var(--color-danger-dark);
+    color: var(--color-danger-light);
+}
+.demon__controls {
+    display: flex;
+    align-items: flex-end;
+}
+
 </style>

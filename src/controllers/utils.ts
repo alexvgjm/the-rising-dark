@@ -49,3 +49,11 @@ export function toMaxFix(num: number, maxDigits: number) {
 
     return hasDecimalPartLongerThanMaxDigits ? num.toFixed(maxDigits) : strnum
 }
+
+export function getTooltipPositionForElement(elm: HTMLElement) {
+    const bRect = elm.getBoundingClientRect()
+    return {
+        x: bRect.left - (remToPx(20) - bRect.width) / 2,
+        y: bRect.bottom + 10 - elm.scrollTop
+    }
+}

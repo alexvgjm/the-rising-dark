@@ -1,6 +1,6 @@
 import { computed, ComputedRef } from "@vue/reactivity";
 import { defineStore } from "pinia";
-import { reactive, Ref, ref } from "vue";
+import { reactive, toRaw } from "vue";
 import { Consumer, Converter, Producer } from "../app-types";
 import { levelFromExp, randomInt, randomPick, shuffle } from "../controllers/utils";
 import { useBuildingsStore } from "./buildings-store";
@@ -45,11 +45,10 @@ export const useDemonsStore = defineStore(
         const buildingStore = useBuildingsStore()
         const demons = reactive<Demon[]>([])
 
-        
-        const baseCapacity = {
+        const baseCapacity: {[key: string]: number} = reactive({
             'Imp': 0,
             'Grunt': 0
-        }
+        })
 
         const professions: {[key: string]: Profession} = {
             'Rat hunter': {
@@ -80,13 +79,8 @@ export const useDemonsStore = defineStore(
             'Grunt': []
         }
 
-        function getDemonCapacityOf(type: DemonType) {
-            return Object.values(buildingStore.buildingDemonCapacity)
-                .flat()
-                .filter((dc) => dc.demon == 'Imp')
-                .reduce((acc, dc) => acc + dc.capacity(), baseCapacity[type])
-        }
-
+        const capacities: {[key: string]: ComputedRef<number>} = {}
+        
         function getFreeName(type: DemonType) {
             const pool = namePool[type]
             shuffle(pool)
@@ -128,6 +122,20 @@ export const useDemonsStore = defineStore(
             return newDemon
         }
 
-        return {demons, newDemon, baseCapacity, getDemonCapacityOf}
+        Object.keys(availableProfession).forEach(dType =>
+            capacities[dType] = 
+                computed(()=> Object.values(buildingStore.buildingDemonCapacity)
+                .flat()
+                .filter((dc) => dc.demon == dType)
+                .reduce((acc, dc) => acc + dc.capacity(), baseCapacity[dType]))
+        )
+
+        function exileDemon(demon: Demon) {
+            const pos = demons.indexOf(demon)
+            if (pos != -1) {
+                demons.splice(pos, 1)
+            }
+        }
+        return {demons, baseCapacity, capacities, newDemon, exileDemon }
     }
 )
