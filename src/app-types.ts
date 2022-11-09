@@ -1,8 +1,7 @@
-import { ComputedRef } from "vue"
-
 export type Point = {
     x: number, y: number
 }
+
 
 export interface ResourceStorage {
     resource: string,

@@ -22,15 +22,17 @@ export const eachSecondDemonsEvents = {
         
         let humansToKill = 0
         ratHunters.forEach(rh => {
-            if (randomInt(1, 200) < rh.level) {
+            if (randomInt(1, 300) < Math.min(rh.level, 10)) {
                 humansToKill++
             }
         })
 
         humansToKill = 
-            Math.min(resStore.resources['humans'].quantity, humansToKill)
+            Math.floor(Math.min(resStore.resources['Humans'].quantity, humansToKill))
 
-        events.emit('ratHunterKillHumans', humansToKill)
-        events.emit('humanDeaths', {quantity: humansToKill, reason: 'Rat hunter'})
+        if (humansToKill > 0) {
+            events.emit('ratHunterKillHumans', humansToKill)
+            events.emit('humanDeaths', {quantity: humansToKill, reason: 'Rat hunter'})
+        }
     }
 }

@@ -1,7 +1,9 @@
+import { computed, ComputedRef } from "@vue/reactivity";
 import { defineStore } from "pinia";
 import { reactive, Ref, ref } from "vue";
 import { Consumer, Converter, Producer } from "../app-types";
 import { levelFromExp, randomInt, randomPick, shuffle } from "../controllers/utils";
+import { useBuildingsStore } from "./buildings-store";
 
 
 export type Profession = {
@@ -22,7 +24,11 @@ export interface Demon {
     upkeep: Consumer[],
     loyalty: number,
     experience: number,
-    get level(): number
+    level: number
+}
+export interface DemonCapacity {
+    demon: DemonType,
+    capacity: ()=>number
 }
 
 const namePool = {
@@ -36,8 +42,14 @@ const namePool = {
 export const useDemonsStore = defineStore(
     'demons',
     () => {
+        const buildingStore = useBuildingsStore()
         const demons = reactive<Demon[]>([])
 
+        
+        const baseCapacity = {
+            'Imp': 0,
+            'Grunt': 0
+        }
 
         const professions: {[key: string]: Profession} = {
             'Rat hunter': {
@@ -68,6 +80,13 @@ export const useDemonsStore = defineStore(
             'Grunt': []
         }
 
+        function getDemonCapacityOf(type: DemonType) {
+            return Object.values(buildingStore.buildingDemonCapacity)
+                .flat()
+                .filter((dc) => dc.demon == 'Imp')
+                .reduce((acc, dc) => acc + dc.capacity(), baseCapacity[type])
+        }
+
         function getFreeName(type: DemonType) {
             const pool = namePool[type]
             shuffle(pool)
@@ -84,13 +103,13 @@ export const useDemonsStore = defineStore(
             const professionName = randomPick(availableProfession[type])
 
             const newDemon: Demon = {
-                name, type, experience: randomInt(1, 150),
+                name, type, 
+                experience: randomInt(1, 150),
                 loyalty: randomInt(30, 70),
-                get level() { return levelFromExp(this.experience) },
                 profession: {...professions[professionName]},
-                upkeep: []
+                upkeep: [],
+                get level() { return levelFromExp(this.experience)},
             }
-            
             
             newDemon.profession.producers = newDemon.profession.producers
                 .map(p => {
@@ -102,13 +121,13 @@ export const useDemonsStore = defineStore(
             
             newDemon.upkeep = upkeeps[type].map<Consumer>(cons => { return {
                 ...cons,
-                quantity: () =>cons.quantity() * (newDemon.level / 3)
+                quantity: () => cons.quantity() * (newDemon.level / 3)
             }})
             
             demons.push(newDemon)
             return newDemon
         }
 
-        return {demons, newDemon}
+        return {demons, newDemon, baseCapacity, getDemonCapacityOf}
     }
 )

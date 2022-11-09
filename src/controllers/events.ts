@@ -1,6 +1,6 @@
 import { useResourcesStore } from "../store/resources-store";
 import mitt from "mitt";
-import { DemonsEvents } from "./events-demons";
+import { DemonsEvents, eachSecondDemonsEvents } from "./events-demons";
 
 const oneTimeEmitters = {
     'firstSoul': ()=>resStore.resources['Souls'].quantity > 0,
@@ -24,6 +24,8 @@ export const events = mitt<EventsDefinitions>()
 
 export function eachSecond() {
     checkStarvation()
+
+    Object.values(eachSecondDemonsEvents).forEach(evt => evt())
 
     Object.entries(oneTimeEmitters).forEach((entry) => {
         const event = entry[0] as keyof EventsDefinitions

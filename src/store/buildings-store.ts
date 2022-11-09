@@ -1,6 +1,7 @@
 import { defineStore } from "pinia";
 import { reactive } from "vue";
 import { Building, Consumer, Converter, Producer, ResourceStorage } from "../app-types";
+import { DemonCapacity } from "./demons-store";
 import { useResourcesStore } from "./resources-store";
 
 export const useBuildingsStore = defineStore(
@@ -9,25 +10,25 @@ export const useBuildingsStore = defineStore(
         const resStore = useResourcesStore()
 
         const buildings: {[key: string]: Building} = reactive<{[key: string]: Building}>({
-            'Human pits': {
-                name: 'Human pits',
+            'Human pit': {
+                name: 'Human pit',
                 description: '👨‍👩‍👧‍👦 More humans! (+0.01/s) for food 🐀 (-0.25/s).',
                 metadescription: 'Fork is work, porks!',
                 level: 0,
                 buildCost: [
                 {
                     resource: 'Stones',
-                    quantity: ()=>25 + 25 * buildings['Human pits'].level * 1.01,
+                    quantity: ()=>25 + 25 * buildings['Human pit'].level * 1.01,
                 }]
             },
-            'Jails': {
-                name: 'Jails',
+            'Jail': {
+                name: 'Jail',
                 description: '👨‍👩‍👧‍👦 More humans capacity! (+1 max humans)',
                 metadescription: "None would try to escape, there is nowhere to go.",
                 level: 0,
                 buildCost: [{
                         resource: 'Stones',
-                        quantity: ()=>10 + 10 * buildings['Jails'].level * 1.02,
+                        quantity: ()=>10 + 10 * buildings['Jail'].level * 1.02,
                 }]
             },
             'Imp hut': {
@@ -55,17 +56,24 @@ export const useBuildingsStore = defineStore(
         }
 
         const buildingStorage: {[key: string]: ResourceStorage[]} = {
-            'Jails': [{
+            'Jail': [{
                 resource: 'Humans',
-                storage: ()=> buildings['Jails'].level
+                storage: ()=> buildings['Jail'].level
+            }]
+        }
+
+        const buildingDemonCapacity: {[key: string]: DemonCapacity[]} = {
+            'Imp hut': [{
+                demon: 'Imp',
+                capacity: ()=> buildings['Imp hut'].level
             }]
         }
 
         const buildingConverters: {[key: string]: Converter[]} = {
-            'Human pits': [
+            'Human pit': [
                 {
-                    multiplier: () => buildings['Human pits'].level,
-                    description: 'Human pits activity',
+                    multiplier: () => buildings['Human pit'].level,
+                    description: 'Human pit activity',
                     inputs: {
                         'Food': 0.25
                     },
@@ -100,6 +108,7 @@ export const useBuildingsStore = defineStore(
                 buildingConsumptions,
                 buildingConverters,
                 buildingStorage,
+                buildingDemonCapacity,
                 build }
     }
 )

@@ -42,7 +42,6 @@ events.on('firstSoul', ()=> {
 })
 
 events.on('fiveSouls', ()=> {
-    demonStore.newDemon('Imp')
     msgStore.addMessage("Your souls attract some lesser demons. An 😈 " 
                       + "Imp join us. They consume souls but can help you with "
                       + "some tasks. They will stay loyal as long as they have "
@@ -55,7 +54,9 @@ events.on('fiveSouls', ()=> {
         'system')
     events.off('fiveSouls')
     oneTimeEvents['fiveSouls'] = true
+    demonStore.baseCapacity['Imp'] += 1
     statsStore.achievements['First demon'].achieved = true
+    demonStore.newDemon('Imp')
 })
 
 

@@ -1,6 +1,7 @@
 import { useDemonsStore } from "../store/demons-store";
 import { useResourcesStore } from "../store/resources-store";
 import { eachSecond, startEventsModule } from "./events";
+import { startDemonsEventsEmitterModule as startDemonsEventsModule } from "./events-demons";
 import { startGeneralEventsModule } from "./events-general";
 
 let timerInterval: number;
@@ -9,6 +10,7 @@ let millisecondsAcc = 0;
 export function start() {
     startEventsModule()
     startGeneralEventsModule()
+    startDemonsEventsModule()
 
     const resStore = useResourcesStore()
     let lastUpdate = Date.now()
