@@ -63,62 +63,88 @@ export const useResourcesStore = defineStore(
         })
 
 
-        function getConsumersOf(resourceName: string): Consumer[] {
+        function getConsumersOf(resId: string): Consumer[] {
             const fromResources = 
                 Object.values(resourcesConsumingResources)
                       .flat()
-                      .filter(cons => cons.resource == resourceName)
+                      .filter(cons => cons.resource == resId)
 
             const fromBuildings = 
                 Object.values(buildingsStore.buildingConsumptions)
                       .flat()
-                      .filter(cons => cons.resource == resourceName)
+                      .filter(cons => cons.resource == resId)
 
             const fromDemonsConsumers: Consumer[] =
                 demonsStore.demons.map(d => d.profession.consumers)
                                   .flat()
-                                  .filter(cons => cons.resource == resourceName)
+                                  .filter(cons => cons.resource == resId)
             
-            const fromDemonsUpkeeps: Consumer[] =
+            /*const fromDemonsUpkeeps: Consumer[] =
                 demonsStore.demons.map(d => d.upkeep)
                                   .flat()
-                                  .filter(cons => cons.resource == resourceName)
+                                  .filter(cons => cons.resource == resourceName)*/
+
+
+            const upkeepsConsumers: {[key: string]: Consumer} = {}
+
+            demonsStore.demons
+                .map(d => d.upkeep)
+                .flat()
+                .filter(consumer => consumer.resource == resId)
+                .forEach(cons => {
+                    if (!(cons.description in upkeepsConsumers)) {
+                        upkeepsConsumers[cons.description] = {...cons}
+                    } else {
+                        const acc = upkeepsConsumers[cons.description]
+                        const currentQty = acc.quantity
+                        acc.quantity = ()=> currentQty() + cons.quantity()
+                    }
+                })
         
             return [...fromResources, ...fromBuildings, 
-                    ...fromDemonsConsumers, ...fromDemonsUpkeeps]
+                    ...fromDemonsConsumers, ...Object.values(upkeepsConsumers)]
         }
 
-        function getProducersOf(resourceName: string): Producer[] {
+        function getProducersOf(resId: string): Producer[] {
             const producers: Producer[] = []
             
             // BASE PRODUCERS
             const base: Producer[] = 
-                baseProducers.filter(p => p.resource == resourceName)
+                baseProducers.filter(p => p.resource == resId)
 
             // RESOURCES PRODUCING RESOURCES
             const fromResources = 
                 Object.values(resourcesProducingResources)
                       .flat()
-                      .filter(prod => prod.resource == resourceName)
+                      .filter(prod => prod.resource == resId)
             
             // BUILDINGS
             const fromBuildings = 
                 Object.values(buildingsStore.buildingsProductions)
                       .flat()
-                      .filter(prod => prod.resource == resourceName)
+                      .filter(prod => prod.resource == resId)
 
             // DEMONS
-            const fromDemons: Producer[] =
-                demonsStore.demons
-                           .map(d => d.profession.producers)
-                           .flat()
-                           .filter(prod => prod.resource == resourceName)
+            const professionProducersAcc: {[key: string]: Consumer} = {}
 
+            demonsStore.demons
+                .map(d => d.profession.producers)
+                .flat()
+                .filter(prod => prod.resource == resId)
+                .forEach(prods => {
+                    if (!(prods.description in professionProducersAcc)) {
+                        professionProducersAcc[prods.description] = {...prods}
+                    } else {
+                        const acc = professionProducersAcc[prods.description]
+                        const currentQty = acc.quantity
+                        acc.quantity = ()=> currentQty() + prods.quantity()
+                    }
+                })
 
             return [...base, 
                     ...fromResources, 
                     ...fromBuildings,
-                    ...fromDemons]
+                    ...Object.values(professionProducersAcc)]
         }
         /**
          * Same as getConsumersOf but including only not 0 consumers and

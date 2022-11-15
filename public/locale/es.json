@@ -18,8 +18,8 @@
         },
         "reason": "Razón: ",
         "deathReasons": {
-            "starvation": "hambre 🤣",
-            "ratHunting": "🐀 caza de ratas"
+            "starvation": "inanición.",
+            "ratHunting": "🐀 Equivocación de un cazarratas."
         },
         "ui": {
             "demon": {
@@ -143,7 +143,8 @@
         },
 
         "buildings": {
-            "Human pit": "Actividad del foso humano"
+            "Human pit": "Actividad del foso humano",
+            "Sacrificial pit": "Sacrificio"
         }
     }
 }

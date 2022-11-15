@@ -4,5 +4,8 @@ import vueImportProps from "unplugin-vue-import-props/vite";
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [vue(), vueImportProps()]
+  plugins: [vue(), vueImportProps()],
+  server: {
+    port: 3000
+  }
 })

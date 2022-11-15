@@ -1,7 +1,9 @@
 import { defineStore } from "pinia";
-import { ref } from "vue";
+import { computed, ComputedRef, ref } from "vue";
 import { Building, Consumer, Point, Producer, Resource } from "../app-types";
+import { AVAILABLE_EMOJIS, parseEmojis } from "../controllers/emoji";
 import { LOC } from "../controllers/locale";
+import { Demon } from "./demons-store";
 import { useResourcesStore } from "./resources-store";
 
 export type TooltipSectionContent = {
@@ -72,17 +74,13 @@ export const useTooltipsStore = defineStore(
         function showResourceTooltip(res: Resource, emoji: string, targetPos: Point) {
             position.value = targetPos
 
-            const consumers = resStore.getConsumersOf(res.id)
-            const producers = resStore.getProducersOf(res.id)
-            const converters = resStore.getConvertersOf(res.id)
+            const consumers = computed(() =>
+                resStore.getActiveConsumptionOf(res.id)
+            )
+            const producers = computed(() =>
+                resStore.getActiveProductionOf(res.id)
+            )
 
-            converters.forEach(c => {
-                if ( !resStore.canConvert(c) ) { return }
-                
-                consumers.push(...c.inputs.filter(c => c.resource == res.id))
-                producers.push(...c.outputs.filter(p => p.resource == res.id))
-            })
-            
             tooltip.value = {
                 type: 'resource',
                 resource: res,
@@ -90,8 +88,8 @@ export const useTooltipsStore = defineStore(
                 title: emoji + ' ' +LOC.resources[res.id as 'Souls'].name,
                 description: LOC.resources[res.id as 'Souls'].description,
                 metadescription: LOC.resources[res.id as 'Souls'].metadescription,
-                consumers: consumers,
-                producers: producers
+                consumers: consumers as unknown as Consumer[],
+                producers: producers as unknown as Producer[]
             }
             
             show(targetPos)
@@ -104,6 +102,25 @@ export const useTooltipsStore = defineStore(
             show(targetPos)
         }
 
+        function showUpkeepTooltip(demon: Demon, targetPos: Point) {
+            tooltip.value = {
+                type: "resource",
+                resource: resStore.resources['Souls'], // dummy
+                description: "Loyalty will decrease if upkeep not fulfilled",
+                title: "Upkeep",
+                consumers: demon.upkeep.map((c) => {
+                    return {
+                        ...c,
+                        description: parseEmojis(AVAILABLE_EMOJIS[c.resource]) 
+                                    + " " + LOC.resources[c.resource as 'Souls'].name
+                    }
+                }),
+                metadescription: '',
+                producers: [] // dummy
+            }
+            show(targetPos)
+        }
+
         function hideTooltip() {
            visible.value = false
         }
@@ -111,7 +128,7 @@ export const useTooltipsStore = defineStore(
         return {
             tooltip, visible, position,
             showBuildingTooltip, hideTooltip, showResourceTooltip,
-            showSimpleTooltip
+            showSimpleTooltip, showUpkeepTooltip
         }
     }
 )

@@ -41,10 +41,28 @@ const resStore = useResourcesStore()
     justify-content: space-between;
 }
 
-@media (max-width: 1024px) {
+@media (max-width: 1024pxpx) {
     .resources {
         width: 15rem;
         min-width: 15rem;
+    }
+}
+
+
+@media (max-width: 1024px) {
+    .resources {
+        max-width: none;
+        width: 100%;
+        margin-bottom: var(--h-space);
+    }
+
+    .resources__header {
+        display: none;
+    }
+    .resources__list {
+        margin-top: 0;
+        flex-direction: row;
+        width: 100%;
     }
 }
 </style>

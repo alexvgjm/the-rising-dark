@@ -1,11 +1,11 @@
 import { useMessagesStore } from "../store/messages-store";
 import { useResourcesStore } from "../store/resources-store";
-import { eachSecond, events, startEventsModule, stores } from "./events";
+import { each10Seconds, eachSecond, events, startEventsModule, stores } from "./events";
 import { startGeneralEventsModule } from "./events-general";
+import { startOneTimeEventsModule } from "./events-onetime";
 import { setLoc, __t } from "./locale";
-import { loadSaveObject, SaveGame } from "./save-load";
+import { load, loadSaveObject, save, SaveGame } from "./save-load";
 
-let millisecondsAcc = 0;
 
 /**
  * First called before startGame. Set general config.
@@ -13,6 +13,8 @@ let millisecondsAcc = 0;
 export function preload() {
     return new Promise<SaveGame|null>((resolve, reject) => {
         const save = loadSaveObject()
+        console.log(save);
+        
         if (save) {
             setLoc(save.config.locale).then(()=>{
                 resolve(save)
@@ -26,9 +28,14 @@ export function preload() {
 
 }
 
+let millisAccTo1s = 0;
+let millisAccTo10s = 0;
 export function startGame(savegame: SaveGame | null) {
     startEventsModule()
     startGeneralEventsModule()
+    startOneTimeEventsModule()
+    
+    if(savegame) { load(savegame) }
 
     const resStore = useResourcesStore()
     const msgStore = useMessagesStore()
@@ -41,10 +48,16 @@ export function startGame(savegame: SaveGame | null) {
         lastUpdate = now;
         resStore.updateResources(delta)
 
-        millisecondsAcc += delta
-        if (millisecondsAcc >= 1000) {
-            millisecondsAcc -= 1000
+        millisAccTo1s += delta
+        millisAccTo10s += delta
+        if (millisAccTo1s >= 1000) {
+            millisAccTo1s -= 1000
             eachSecond()
+        }
+
+        if (millisAccTo10s >= 10000) {
+            millisAccTo10s -= 10000
+            each10Seconds()
         }
     }, 250)
 

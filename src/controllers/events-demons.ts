@@ -1,13 +1,48 @@
+import { Demon, DemonType } from "../store/demons-store"
 import { events, stores } from "./events"
-import { LOC } from "./locale"
 import { randomInt } from "./utils"
 
 export type DemonsEvents = {
-    'ratHunting': number
+    'ratHunting': number,
+    'demonBetrayal': Demon,
+    'demonSpawn': Demon,
 }
 
 
+export const each10SecondsDemonsEvents = {
+    'demonSpawn': ()=>{
+        Object.entries(stores.demonStore.capacities)
+            .forEach(([dType, cap])=>{
+                if(stores.demonStore.demons
+                    .filter(d => d.type == dType)
+                    .length >= (cap as unknown as number)) {
+                    return
+                }
+                
+                if (randomInt(1, 100) < 101) {
+                    events.emit(
+                        'demonSpawn',
+                        stores.demonStore.newRandomDemon(dType as DemonType)
+                    )
+                }
+            })
+    },
+}
+
 export const eachSecondDemonsEvents = {
+    'loyalty': ()=> {
+        stores.demonStore.demons.forEach(d => {
+            if(d.upkeep.some(c =>
+                c.quantity() > stores.resStore.resources[c.resource].quantity
+            )) {
+                d.loyalty = Math.max(d.loyalty - 0.25, 0)
+                if ( d.loyalty == 0 ) { events.emit('demonBetrayal', d) }
+            } else {
+                d.loyalty = Math.min(d.loyalty + 0.05, 100)
+            }
+        })
+    },
+
     'ratHunting': ()=>{
         const ratHunters = 
             stores.demonStore.demons

@@ -18,8 +18,8 @@
         },
         "reason": "Reason: ",
         "deathReasons": {
-            "starvation": "starvation 🤣",
-            "ratHunting": "🐀 rat hunting "
+            "starvation": "starvation.",
+            "ratHunting": "🐀 A rat hunter's mistake."
         },
         "ui": {
             "demon": {
@@ -64,7 +64,7 @@
     "professions": {
         "Rat hunter": {
             "name": "Rat hunter",
-            "description": "Gather 🐀 food (+${ratHuntingFood}/s) per level. Sometimes kill humans. Brings some experience over time until reach level 5.",
+            "description": "Gather 🐀 food (+${ratHuntingFood}/s) per level. Sometimes kill humans. Brings experience over time until reach level 5.",
             "metadescription": "It's not so easy to distinguish humans from rats."
         }
     },
@@ -101,7 +101,7 @@
             },
             "Gather rats": {
                 "name": "🐀 Gather rats",
-                "description": "Collect food for humans.",
+                "description": "Order Eknu Ulburas and his followers to catch some rats, food for humans and other creatures.",
                 "metadescription": "There are two types of rats: the ones we find in the abundant nests and the ones that are playing The Rising Dark without donate on Patreon."
             }
         },
@@ -143,7 +143,8 @@
 
 
         "buildings": {
-            "Human pit": "Human pit activty"
+            "Human pit": "Human pit activty",
+            "Sacrificial pit": "Sacrifice"
         }
     }
 }

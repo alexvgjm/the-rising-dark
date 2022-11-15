@@ -29,10 +29,12 @@ onMounted(() => {
         langSelected.value = true
         startGame(savegame)
       }
-    }).catch((({ reason, savegame }) => {
-      save = savegame
-      error.value = reason
-      langSelected.value = true
+    }).catch(((err) => {
+      console.log(err);
+      save = err.savegame
+      error.value = err.reason
+      langSelected.value = false
+      loading.value = false
     }))
 })
 
@@ -152,6 +154,13 @@ main {
 
   100% {
     transform: rotate(360deg);
+  }
+}
+
+
+@media (max-width: 1024px) {
+  main {
+    flex-direction: column;
   }
 }
 </style>

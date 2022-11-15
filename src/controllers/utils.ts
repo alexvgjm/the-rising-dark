@@ -25,10 +25,11 @@ export function getAllStores() {
 }
 
 export function experienceToReachLevel(level: number) {
-    return Math.floor( Math.pow((level-1), 1.5) * 50)
+    return Math.ceil( Math.pow((level-1), 1.5) * 50)
 }
 
 export function levelFromExp(xp: number) {
+    xp = Math.floor(xp)
     return Math.floor( Math.pow(xp / 50, 1/1.5) + 1)
 }
 

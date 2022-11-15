@@ -1,18 +1,8 @@
 <script lang="ts" setup>
 import { toMaxFix } from '../../controllers/utils';
 import { ResourceTooltip, useTooltipsStore } from '../../store/tooltip-store';
-import { useResourcesStore } from '../../store/resources-store';
-import { computed } from '@vue/reactivity';
 
 const tt = useTooltipsStore()
-const resStore = useResourcesStore()
-const consumers = computed(() =>
-    resStore.getActiveConsumptionOf((<ResourceTooltip>tt.tooltip).resource.id)
-)
-
-const producers = computed(() =>
-    resStore.getActiveProductionOf((<ResourceTooltip>tt.tooltip).resource.id)
-)
 </script>
 
 
@@ -26,7 +16,8 @@ const producers = computed(() =>
         </section>
 
         <section class="tooltip__section tooltip__producers">
-            <div v-for="prod in producers" class="tooltip__resource-item tooltip__resource-item--positive">
+            <div v-for="prod in (tt.tooltip as ResourceTooltip).producers" 
+                class="tooltip__resource-item tooltip__resource-item--positive">
                 <span class="tooltip__producer-description" v-html="prod.description"></span>
                 <span class="tooltip__producer-quantity">
                     +{{ toMaxFix(prod.quantity(), 2) }}/s</span>
@@ -34,7 +25,8 @@ const producers = computed(() =>
         </section>
 
         <section class="tooltip__section tooltip__consumers">
-            <div v-for="cons in consumers" class="tooltip__resource-item tooltip__resource-item--negative">
+            <div v-for="cons in (tt.tooltip as ResourceTooltip).consumers" 
+                class="tooltip__resource-item tooltip__resource-item--negative">
                 <span class="tooltip__consumer-description" v-html="cons.description"></span>
                 <span class="tooltip__consumer-quantity">
                     -{{ toMaxFix(cons.quantity(), 2) }}/s</span>

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, ref } from 'vue';
+import { computed, Ref, ref } from 'vue';
 import { LOC } from '../controllers/locale';
 import { experienceToReachLevel, getTooltipPositionForElement, remToPx } from '../controllers/utils';
 import { AVAILABLE_EMOJIS, parseEmojis } from '../controllers/emoji';
@@ -21,8 +21,9 @@ const demonEmojis: {[key in DemonType]: string} = {
 
 const profDiv = ref<HTMLElement>()
 const exileBtn = ref<HTMLElement>()
+const loyaltyBar = ref<{barRef: HTMLDivElement}>()
 
-const minExp = computed(()=>experienceToReachLevel(props.demon.level))
+const minExp = computed(()=>Math.max(0, experienceToReachLevel(props.demon.level)))
 const maxExp = computed(()=>experienceToReachLevel(props.demon.level+1))
 
 function professionHover() {
@@ -41,6 +42,14 @@ function exileHover() {
     tt.showSimpleTooltip(
         LOC.general.ui.demon.exileTooltip, 
         getTooltipPositionForElement(exileBtn.value!)
+    )
+}
+
+function loyaltyHover() {
+    console.log(loyaltyBar.value!.barRef);
+    
+    tt.showUpkeepTooltip(props.demon, 
+        getTooltipPositionForElement(loyaltyBar.value!.barRef)
     )
 }
 
@@ -71,6 +80,9 @@ function exileDemon() { demStore.exileDemon(props.demon) }
                      {{LOC.general.ui.demon.nextLevel}}</ProgressBar>
 
         <ProgressBar class="demon__loyalty-bar"
+                     ref="loyaltyBar"
+                     @mouseenter="loyaltyHover" @focus="loyaltyHover"
+                     @mouseleave="tt.hideTooltip" @blur="tt.hideTooltip"
                      :min="0" :max="100"
                      :default-text="'percent'"
                      :hover-text="'percent'"

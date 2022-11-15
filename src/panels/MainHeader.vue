@@ -42,4 +42,11 @@ const version = inject('version')
     font-size: 0.9rem;
     color: var(--color-primary-light);
 }
+
+
+@media (max-width: 1024px) {
+    .game__subtitle {
+        display: none;
+    }
+}
 </style>

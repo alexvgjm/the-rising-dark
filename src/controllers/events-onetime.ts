@@ -2,13 +2,13 @@ import { Building } from "../app-types"
 import { events, stores } from "./events"
 import { LOC, __t } from "./locale"
 
-
-console.log("One time events loaded");
-
-events.on('built', firstImpHut)
-events.on('firstSoul', firstSoul)
-events.on('twentySouls', twentySouls)
-events.on('greetings', greetings)
+export function startOneTimeEventsModule() {
+    console.log("One time events loaded");
+    events.on('built', firstImpHut)
+    events.on('firstSoul', firstSoul)
+    events.on('twentySouls', twentySouls)
+    events.on('greetings', greetings)
+}
 
 function greetings() {
     stores.msgStore.addMessage(__t(LOC.system.greetings1), 'system')

@@ -30,7 +30,7 @@ export const useBuildingsStore = defineStore(
                 buildCost: [{
                     resource: 'Stones',
                     quantity: () =>
-                        Math.floor(250 + 250 * buildings['Human pit'].level * 1.01),
+                        Math.floor(250 + 250 * buildings['Sacrificial pit'].level * 1.01),
                 }],
                 unlock: computed(() => statsStore.achievements['First demon'].achieved) as unknown as boolean
             },
@@ -76,6 +76,20 @@ export const useBuildingsStore = defineStore(
                         resource: 'Humans',
                         quantity: ()=>CONSTANTS.humanPitHumans * buildings['Human pit'].level,
                         description: LOC.consumers.buildings['Human pit']
+                    }]
+                }
+            ],
+            'Sacrificial pit': [
+                {
+                    inputs: [{
+                        resource: 'Humans',
+                        quantity: ()=>buildings['Sacrificial pit'].level * 0.1,
+                        description: LOC.consumers.buildings['Sacrificial pit']
+                    }],
+                    outputs: [{
+                        resource: 'Souls',
+                        quantity: ()=>buildings['Sacrificial pit'].level * 0.1,
+                        description: LOC.consumers.buildings['Sacrificial pit']
                     }]
                 }
             ]

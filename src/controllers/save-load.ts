@@ -1,8 +1,8 @@
-import * as fflate from "fflate";
 import { DemonCreationPayload, DemonType } from "../store/demons-store";
 import { Config } from "../store/stats-store";
 import { events, stores } from "./events";
 import { oneTimeEvents } from "./events-onetime";
+import { compressToBase64, decompressFromBase64 } from "lz-string";
 
 export type SaveGame = {
     resources: {[k: string]: number},
@@ -56,26 +56,22 @@ export function save() {
         achievements, completedOneTimeEvents, config: stores.statsStore.config
     }
 
-    const serializedData = fflate.strToU8(JSON.stringify(toSerialize))
-    const compressed = fflate.compressSync(serializedData)
-    const compressedString = fflate.strFromU8(compressed)
-    localStorage.setItem('savegame', compressedString)
+    const jsonString = JSON.stringify(toSerialize)
+    const compressed = compressToBase64(jsonString)
+    localStorage.setItem('savegame', compressed)
 }
 
 export function loadSaveObject() {
-    const compressedString = localStorage.getItem('savegame')
-    if (!compressedString) { return null }
-
-    const compressed = fflate.strToU8(compressedString)
-    const serializedData = fflate.decompressSync(compressed)
-    return JSON.parse(fflate.strFromU8(serializedData)) as SaveGame
+    const compressed = localStorage.getItem('savegame')
+    if (!compressed) { return null }
+    const jsonString = decompressFromBase64(compressed)!
+    return JSON.parse(jsonString) as SaveGame
 }
 
 /**
  * @returns true if savegame loaded
  */
 export function load(sg: SaveGame) {
-
 
     Object.entries(sg.config).forEach(([key, value]) => {
         //@ts-ignore

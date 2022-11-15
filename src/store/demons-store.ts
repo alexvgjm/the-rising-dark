@@ -93,7 +93,7 @@ export const useDemonsStore = defineStore(
             'Grunt': []
         }
 
-        const capacities: {[key: string]: ComputedRef<number>} = {}
+        const capacities: {[key: string]: number} = {}
         
         function getFreeName(type: DemonType) {
             const pool = namePool[type]
@@ -115,7 +115,7 @@ export const useDemonsStore = defineStore(
                 loyalty: randomInt(30, 70),
             }
 
-            newCustomDemon(creationPayload)
+            return newCustomDemon(creationPayload)
         }
 
         function newCustomDemon(demon: DemonCreationPayload) {
@@ -149,13 +149,15 @@ export const useDemonsStore = defineStore(
             return newDemon
         }
 
+        // FIXME: foreach demon type
         Object.keys(availableProfession).forEach(dType =>
+            // Caps from baseCapacity + demon buildings capacities
             capacities[dType] = 
                 computed(()=> Object.values(buildingStore.buildingDemonCapacity)
                 .flat()
                 .filter((dc) => dc.demon == dType)
                 .reduce((acc, dc) => acc + dc.capacity(), 
-                        baseCapacity[dType as DemonType]))
+                        baseCapacity[dType as DemonType])) as unknown as number
         )
 
         function exileDemon(demon: Demon) {

@@ -34,13 +34,18 @@ const barText = computed(()=> {
 
     return displays[hovering.value ? props.hoverText : props.defaultText]
 })
+
+const barRef = ref<HTMLDivElement>()
+defineExpose({ barRef })
 </script>
 
 <template>
-    <div class="progress-bar" @mouseover="hovering = true"
-                              @focus="hovering = true"
-                              @mouseleave="hovering = false"
-                              @blur="hovering = false">
+    <div class="progress-bar" 
+        ref="barRef"
+        @mouseover="hovering = true"
+        @focus="hovering = true"
+        @mouseleave="hovering = false"
+        @blur="hovering = false">
         <div class="progress-bar__text"><slot></slot> {{barText}}</div>
         <div class="progress-bar__filler" :style="{width: percent}"></div>
     </div>

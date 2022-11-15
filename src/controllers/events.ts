@@ -1,12 +1,10 @@
 import mitt from "mitt";
-import { DemonsEvents, eachSecondDemonsEvents } from "./events-demons";
+import { DemonsEvents, each10SecondsDemonsEvents, eachSecondDemonsEvents } from "./events-demons";
 import { BuildingsEvents } from "./events-buildings";
 import { getAllStores } from "./utils";
-
-    
 import './events-general'
 import { eachSecondGeneralEventsCheckers, HumanDeathsPayload } from "./events-general";
-import { MessageOptions } from "../store/messages-store";
+import { save } from "./save-load";
 const eachSecondOnetimeEvents = {
     'greetings': ()=>true,
     'firstImpHut': ()=>stores.buildStore.buildings['Imp hut'].level >= 1,
@@ -29,6 +27,11 @@ export function startEventsModule() {
 }
 
 export const events = mitt<EventsDefinitions>()
+
+export function each10Seconds() {
+    Object.values(each10SecondsDemonsEvents).forEach(chk => chk())
+    save()
+}
 
 export function eachSecond() {
     Object.values(eachSecondDemonsEvents).forEach(evt => evt())

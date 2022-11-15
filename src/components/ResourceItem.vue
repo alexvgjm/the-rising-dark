@@ -9,7 +9,6 @@ import { useTooltipsStore } from '../store/tooltip-store';
 
 const props = defineProps<Resource>()
 
-                // FIXME: because typing...
 const name = computed(()=>LOC.resources[props.id as 'Souls'].name)
 const safename = props.id.toLowerCase().replaceAll(' ', '-');
 const textColor = `var(--color-resource-${safename})`
@@ -44,7 +43,6 @@ function resourceHover() {
 
 <style>
 .resource {
-
     display: flex;
     align-items: center;
     width: 100%;
@@ -66,6 +64,11 @@ function resourceHover() {
 }
 
 @media (max-width: 1024px) {
+    .resource {
+        width: fit-content;
+        padding: var(--q-space) var(--space);
+        border: none;
+    }
     .resource__name {
         display: none;
     }
