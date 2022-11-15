@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { computed, ref } from 'vue';
 import { Building } from '../app-types';
+import { LOC } from '../controllers/locale';
 import { getTooltipPositionForElement } from '../controllers/utils';
 import { useBuildingsStore } from '../store/buildings-store';
 import { useResourcesStore } from '../store/resources-store';
@@ -30,8 +31,8 @@ function hoveringHandler() {
 }
 
 function clickHandler() {
-    if (affordable) { 
-        buildingStore.build(props.name)
+    if (affordable) {
+        buildingStore.build(props.id)
         hoveringHandler()
     }
 }
@@ -40,7 +41,7 @@ function clickHandler() {
 
 <template>
     <button ref="button"
-            @mousemove="hoveringHandler"
+            @mouseenter="hoveringHandler"
             @focus="hoveringHandler"
             @blur="ttStore.hideTooltip"
             @mouseleave="ttStore.hideTooltip"
@@ -49,17 +50,16 @@ function clickHandler() {
                 'building-button--unaffordable': !affordable
             }">
         <span class="building-button__level">{{level}}</span>
-        <span class="building-button__name">{{name}}</span>
+        <span class="building-button__name">{{LOC.buildings[id as 'Jail'].name}}</span>
     </button>
 </template>
 
 
 <style>
 .building-button {
-    padding: var(--h-em-space) var(--x3-space);
     position: relative;
-    margin-right: var(--space);
-    min-width: 12rem;
+    padding: var(--h-em-space) var(--x3-space);
+    margin-top: 0;
 }
 
 .building-button__level {

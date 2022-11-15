@@ -1,6 +1,7 @@
 import { defineStore } from "pinia";
 import { reactive } from "vue";
 
+
 export interface Achievement {
     type: 'progress' | 'building' | 'resource' | 'demons'
     name: string,
@@ -9,9 +10,17 @@ export interface Achievement {
     achieved: boolean
 }
 
+export type Config = {
+    locale: string
+}
+
 export const useStatsStore = defineStore(
     'stats',
     () => {
+        const config: Config = reactive({
+            locale: 'en'
+        })
+
         const achievements = reactive<{[key: string]: Achievement}>({
             'First demon': {
                 type: 'demons',
@@ -26,6 +35,6 @@ export const useStatsStore = defineStore(
             achievements[name].achieved = true
         }
         
-        return {achievements, completeAchievement}
+        return {achievements, config, completeAchievement}
     }
 )

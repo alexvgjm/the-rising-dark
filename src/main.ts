@@ -5,7 +5,6 @@ import { createPinia } from 'pinia'
 import { RouteRecordRaw, createRouter, createWebHashHistory } from "vue-router";
 import BuildingPanel from './panels/BuildingPanel.vue';
 import DemonsPanel from './panels/DemonsPanel.vue';
-
 const routes: RouteRecordRaw[] = [
     {path: '/', component: BuildingPanel},
     {path: '/demons', component: DemonsPanel}
@@ -17,6 +16,7 @@ const router = createRouter({
     routes: routes,
     linkActiveClass: 'main-nav__link--active'
 })
+
 
 const app = createApp(App)
             .use(router)

@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { useResourcesStore } from '../store/resources-store';
 import ResourceItem from '../components/ResourceItem.vue';
+import { LOC } from '../controllers/locale';
 
 
 const resStore = useResourcesStore()
@@ -11,13 +12,11 @@ const resStore = useResourcesStore()
 <template>
     <section class="resources panel">
         <header class="resources__header">
-            <h1>Resources</h1>
+            <h1>{{ LOC.general.ui.tabs.resources }}</h1>
         </header>
 
         <div class="resources__list">
-            <ResourceItem v-for="resource in resStore.resources" 
-                v-bind="resource"
-            />
+            <ResourceItem v-for="resource in resStore.resources" v-bind="resource" />
         </div>
 
     </section>
@@ -30,6 +29,7 @@ const resStore = useResourcesStore()
     width: 25rem;
     min-width: 25rem;
 }
+
 .resources__header {
     text-align: center;
 }
@@ -41,4 +41,10 @@ const resStore = useResourcesStore()
     justify-content: space-between;
 }
 
+@media (max-width: 1024px) {
+    .resources {
+        width: 15rem;
+        min-width: 15rem;
+    }
+}
 </style>

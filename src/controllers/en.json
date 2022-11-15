@@ -1,0 +1,149 @@
+{
+    "system": {
+        "greetings1": "We awaited your arrival, overseer. I'm Eknu Ulburas, First Shadow of the house of Ulbur. We know that the Witch King has given you a second chance in the devastated lands. Do not consider it an exile, we must fulfill the will of the Dark One.",
+        
+        "greetings2": "We have no time to waste, there are some humans roaming these lands and they are well known for their tendency to release their soul upon death. In this plane, souls are the main currency and an irresistible source of power.",
+
+        "firstSoul": "Overseer, we just \"reaped\" our first soul. I recommend you continue to starve humans. At least you won't get blood on yourself.",
+
+        "firstDemon1": "Accumulated souls attract some lesser demons. An 😈 Imp has joined us. Imps consume souls but can help you with some tasks. They will stay loyal as long as they get what they want.",
+
+        "firstImpHut": "My Dark Lord, with huts for the imps, more of them will be encouraged to follow you. More will come over time and I'm not sure that's good news..."
+    },
+
+    "general": {
+        "humanDeath": {
+            "singular": "🎉 A human has died.",
+            "plural": "🎉 ${quantity} humans have died."
+        },
+        "reason": "Reason: ",
+        "deathReasons": {
+            "starvation": "starvation 🤣",
+            "ratHunting": "🐀 rat hunting "
+        },
+        "ui": {
+            "demon": {
+                "level": "Level",
+                "nextLevel": "Next Level",
+                "loyalty": "Loyalty",
+                "confirmExile": "I'm sure, exile",
+                "exile": "Exile",
+                "forgive": "Forgive",
+                "exileTooltip": {
+                    "title": "Exile", 
+                    "description": "Get rid of this demon.",
+                    "metadescription": "How to exile an exile?"
+                }
+            },
+            "tabs": {
+                "resources": "⛏ Resources",
+                "messages": "✉ Messages",
+                "buildings": "🌇 Buildings",
+                "demons": "😈 Demons" 
+            },
+            "sections": {
+                "buildings": {
+                    "manualActions": "Manual actions",
+                    "population": "Population"
+                }
+            }
+        }
+    },
+
+    "demons": {
+        "types": {
+            "Imp": "Imp",
+            "Grunt": "Grunt",
+            "plural": {
+                "Imps": "Imps",
+                "Grunts": "Grunts"
+            }
+        }
+    },
+
+    "professions": {
+        "Rat hunter": {
+            "name": "Rat hunter",
+            "description": "Gather 🐀 food (+${ratHuntingFood}/s) per level. Sometimes kill humans. Brings some experience over time until reach level 5.",
+            "metadescription": "It's not so easy to distinguish humans from rats."
+        }
+    },
+
+    "resources": {
+        "Souls": {
+            "name": "Souls",
+            "description": "A main resource.",
+            "metadescription": "Main source of power in this plane."
+        },
+        "Humans": {
+            "name": "Humans",
+            "description": "Release souls upon death.",
+            "metadescription": "Source of souls and fun."
+        },
+        "Food": {
+            "name": "Food",
+            "description": "Food for humans. Mainly rats.",
+            "metadescription": "May contain traces of human flesh."
+        },
+        "Stones": {
+            "name": "Stones",
+            "description": "Primary building resource.",
+            "metadescription": "Very effective against scissors."
+        }
+    },
+
+    "buildings": {
+        "manualActions": {
+            "Gather stones": {
+                "name": "🪨 Gather stones",
+                "description": "Order Eknu Ulburas and his followers to collect some stones.",
+                "metadescription": "Watch out for stone golems."
+            },
+            "Gather rats": {
+                "name": "🐀 Gather rats",
+                "description": "Collect food for humans.",
+                "metadescription": "There are two types of rats: the ones we find in the abundant nests and the ones that are playing The Rising Dark without donate on Patreon."
+            }
+        },
+        "Human pit": {
+            "name": "Human pit",
+            "description": "Some humans fall by accident, others are born into it, others arrive looking for food. 👨 More humans! (+${humanPit10sHumans} every 10 seconds) for 🐀 food (-${humanPitFood}/s).",
+            "metadescription": "\"Obvio.\""
+        },
+
+        "Sacrificial pit": {
+            "name": "Sacrificial pit",
+            "description": "Sacrifice ${sacrificialPit10sHumans} 👨 human every 10 seconds to get 🟣 souls.",
+            "metadescription": "Wrong hole!"
+        },
+
+        "Jail": {
+            "name": "Jail",
+            "description": "+1 to 👨 humans capacity.",
+            "metadescription": "None would try to escape, there is nowhere to go."
+        },
+
+        "Imp hut": {
+            "name": "Imp hut",
+            "description": "+1 to 😈 imps capacity.",
+            "metadescription": ""
+        }
+    },
+
+    "consumers": {
+        "upkeeps": {
+            "Imp": {
+                "souls": "😈 Imps souls upkeep"
+            }
+        },
+
+        "resources": {
+            "Humans": "Human feeding"
+        },
+
+
+        "buildings": {
+            "Human pit": "Human pit activty"
+        }
+    }
+}

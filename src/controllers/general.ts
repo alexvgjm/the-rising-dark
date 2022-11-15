@@ -1,20 +1,40 @@
-import { useDemonsStore } from "../store/demons-store";
+import { useMessagesStore } from "../store/messages-store";
 import { useResourcesStore } from "../store/resources-store";
-import { eachSecond, startEventsModule } from "./events";
-import { startDemonsEventsEmitterModule as startDemonsEventsModule } from "./events-demons";
+import { eachSecond, events, startEventsModule, stores } from "./events";
 import { startGeneralEventsModule } from "./events-general";
+import { setLoc, __t } from "./locale";
+import { loadSaveObject, SaveGame } from "./save-load";
 
-let timerInterval: number;
 let millisecondsAcc = 0;
 
-export function start() {
+/**
+ * First called before startGame. Set general config.
+ */
+export function preload() {
+    return new Promise<SaveGame|null>((resolve, reject) => {
+        const save = loadSaveObject()
+        if (save) {
+            setLoc(save.config.locale).then(()=>{
+                resolve(save)
+            }).catch(e => {
+                reject({reason: e, save: save})
+            })
+        } else {
+            resolve(null)
+        }
+    })
+
+}
+
+export function startGame(savegame: SaveGame | null) {
     startEventsModule()
     startGeneralEventsModule()
-    startDemonsEventsModule()
 
     const resStore = useResourcesStore()
+    const msgStore = useMessagesStore()
+
     let lastUpdate = Date.now()
-    timerInterval = setInterval(()=>{
+    setInterval(()=>{
         const now = Date.now()
         const delta = Math.min(now - lastUpdate, 1000)
 
@@ -26,7 +46,14 @@ export function start() {
             millisecondsAcc -= 1000
             eachSecond()
         }
-    }, 100)
+    }, 250)
 
-    resStore.addResource('Souls', 20)
+
+    if (!savegame) {
+       /* resStore.addResource('Souls', 20)
+        resStore.addResource('Stones', 1000)
+        resStore.addResource('Food', 1)
+        resStore.addResource('Humans', 0)*/
+        events.emit('greetings', true)
+    }
 }

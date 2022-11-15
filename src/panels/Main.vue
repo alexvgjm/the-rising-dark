@@ -1,6 +1,9 @@
 <script lang="ts" setup>
 import { RouterLink, RouterView } from "vue-router";
+import { LOC } from "../controllers/locale";
 import { useStatsStore } from "../store/stats-store";
+
+import impImgURL from "../assets/icons/imp.svg";
 
 
 const statsStore = useStatsStore()
@@ -10,9 +13,14 @@ const statsStore = useStatsStore()
 <template>
     <section class="panel world">
         <nav class="main-nav">
-            <RouterLink class="main-nav__link" to="/">🌇 Buildings</RouterLink>
+            <RouterLink to="/"
+                        class="main-nav__link"
+                        v-html="LOC.general.ui.tabs.buildings" />
+
             <RouterLink v-if="statsStore.achievements['First demon'].achieved" 
-                    class="main-nav__link" to="/demons">👹 Demons</RouterLink>
+                        to="/demons"
+                        class="main-nav__link"
+                        v-html="LOC.general.ui.tabs.demons" />
         </nav>
 
 

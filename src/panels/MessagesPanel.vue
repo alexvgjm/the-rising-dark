@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { useMessagesStore } from '../store/messages-store';
 import Message from '../components/Message.vue';
+import { LOC } from '../controllers/locale';
 
 
 const msgStore = useMessagesStore()
@@ -10,9 +11,10 @@ const msgStore = useMessagesStore()
 
 <template>
     <section class="messages panel">
-        <h1>Messages</h1>
+        <h1>{{LOC.general.ui.tabs.messages}}</h1>
         
-        <Message v-for="msg in msgStore.messages" v-bind="msg"/>
+        <Message v-for="msg in msgStore.messages"
+                 :msg="msg"/>
     </section>
 </template>
 

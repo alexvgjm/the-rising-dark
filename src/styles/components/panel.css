@@ -11,3 +11,6 @@
 .panel__header {
     margin-bottom: var(--h-space);
 }
+.panel__title {
+    font-size: 1.5rem;
+}

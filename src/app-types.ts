@@ -18,25 +18,17 @@ export interface Producer {
     quantity: ()=>number
 }
 export interface Converter {
-    multiplier: ()=>number
-    description: string
-    inputs: {[key: string]: number}
-    outputs: {[key: string]: number}
+    inputs: Consumer[]
+    outputs: Producer[]
 }
 
 export type Resource = {
-    name: string,
-    description: string,
+    id: string,
     quantity: number,
-    max: number,
-    emoji?: string
+    max: number
 }
 
-export type Message = {
-    text: string,
-    type: string,
-    hour: string
-}
+
 
 
 
@@ -47,9 +39,7 @@ export type Message = {
 
 
 export type Building = {
-    name: string,
-    description: string,
-    metadescription: string,
+    id: string,
     level: number,
     unlock: boolean,
 

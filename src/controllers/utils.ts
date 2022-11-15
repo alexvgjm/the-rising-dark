@@ -1,3 +1,10 @@
+import { useBuildingsStore } from "../store/buildings-store"
+import { useDemonsStore } from "../store/demons-store"
+import { useMessagesStore } from "../store/messages-store"
+import { useResourcesStore } from "../store/resources-store"
+import { useStatsStore } from "../store/stats-store"
+import { useTooltipsStore } from "../store/tooltip-store"
+
 export function calculateCostByLevel(level: number, base: number, factor: number) {
     return base + base * level * factor
 }
@@ -6,11 +13,14 @@ export function calculateProduction(level: number, base: number, factor: number)
     return base * level * factor
 }
 
-function test() {
-    for(let i = 0; i < 10; i++) {
-        const xp = experienceToReachLevel(i)
-        const lvl = levelFromExp(xp)
-        console.log(i + "\t" + xp + "\t" + lvl);
+export function getAllStores() {
+    return {
+        resStore: useResourcesStore(),
+        buildStore: useBuildingsStore(),
+        ttStore: useTooltipsStore(),
+        demonStore: useDemonsStore(),
+        msgStore: useMessagesStore(),
+        statsStore: useStatsStore()
     }
 }
 

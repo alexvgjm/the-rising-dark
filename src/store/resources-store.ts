@@ -1,8 +1,10 @@
 import { defineStore } from "pinia";
 import { computed, reactive } from "vue";
 import { Consumer, Converter, Producer, Resource } from "../app-types";
+import { LOC } from "../controllers/locale";
 import { useBuildingsStore } from "./buildings-store";
 import { useDemonsStore } from "./demons-store";
+
 
 
 export const useResourcesStore = defineStore(
@@ -14,35 +16,27 @@ export const useResourcesStore = defineStore(
             'Souls': 200,
             'Humans': 3,
             'Food': 100,
-            'Stones': 100
+            'Stones': 1000
         })
         
         const resources = reactive<{ [key: string]: Resource }>({
             'Souls': {
-                name: 'Souls',
-                description: 'What you are looking for.',
-                emoji: '🟣',
+                id: 'Souls',
                 quantity: 0,
                 max: computed(()=>getStorageOf('Souls')) as unknown as number
             },
             'Humans': {
-                name: 'Humans',
-                description: 'Your main resource. Source of souls and fun.',
-                emoji: '👨‍👩‍👧‍👦',
+                id: 'Humans',
                 quantity: 0,
                 max: computed(()=>getStorageOf('Humans')) as unknown as number
             },
             'Food': {
-                name: 'Food',
-                description: 'To feed humans and other creatures',
-                emoji: '🐀',
+                id: 'Food',
                 quantity: 0,
                 max: computed(()=>getStorageOf('Food')) as unknown as number
             },
             'Stones': {
-                name: 'Stones',
-                description: 'A primitive way of physically exposing our might.',
-                emoji: '🪨',
+                id: 'Stones',
                 quantity: 0,
                 max: computed(()=>getStorageOf('Stones')) as unknown as number
             }
@@ -62,11 +56,12 @@ export const useResourcesStore = defineStore(
 
         const resourcesConsumingResources = reactive<{[key: string]: Consumer[]}>({
             "Humans": [{
-                description: 'Human food consumption',
+                description: LOC.consumers.resources['Humans'],
                 resource: 'Food',
-                quantity: () => resources['Humans'].quantity * 0.25
+                quantity: () => Math.floor(resources['Humans'].quantity) * 0.25
             }]
         })
+
 
         function getConsumersOf(resourceName: string): Consumer[] {
             const fromResources = 
@@ -125,14 +120,51 @@ export const useResourcesStore = defineStore(
                     ...fromBuildings,
                     ...fromDemons]
         }
+        /**
+         * Same as getConsumersOf but including only not 0 consumers and
+         * converter consumers.
+         */
+        function getActiveConsumptionOf(resId: string): Consumer[] {
+            const directConsume = getConsumersOf(resId)
+                                    .filter(c => c.quantity() != 0)
+
+            const converterConsumers = getConvertersOf(resId)
+                                        .filter(conv => canConvert(conv))
+                                        .map(conv => conv.inputs)
+                                        .flat()
+                                        .filter(c => c.resource == resId &&
+                                                     c.quantity() != 0)
+
+            return [...directConsume, ...converterConsumers]
+        }
+
+        /**
+         * Same as getProducersOf but including only not 0 Producers and
+         * converter Producers.
+         */
+        function getActiveProductionOf(resId: string): Consumer[] {
+            const directProduction = getProducersOf(resId)
+                                    .filter(c => c.quantity() != 0)
+
+            const converterProducers = getConvertersOf(resId)
+                                        .filter(conv => canConvert(conv))
+                                        .map(conv => conv.outputs)
+                                        .flat()
+                                        .filter(p => p.resource == resId &&
+                                                     p.quantity() != 0)
+
+            return [...directProduction, ...converterProducers]
+        }
 
         function getConvertersOf(resourceName: string): Converter[] {
             const fromBuildings = 
                 Object.values(buildingsStore.buildingConverters)
-                    .flat()
-                    .filter(cons => resourceName in cons.inputs
-                                 || resourceName in cons.outputs)
+                .flat()
+                .filter(conv => 
+                    conv.inputs.some(cons => cons.resource == resourceName)
+                 || conv.outputs.some(prod => prod.resource == resourceName))
                 
+            
             return [...fromBuildings]
         }
 
@@ -143,29 +175,20 @@ export const useResourcesStore = defineStore(
                   .filter(stg => stg.resource == resourceName)
                   .reduce((acc, stg) => acc + stg.storage(), 0)
             
-            
-            console.log(resourceName, 
-                baseStorage[resourceName], 
-                fromBuildings, 'Total: ', 
-                baseStorage[resourceName] + fromBuildings);
-            
             return baseStorage[resourceName] + fromBuildings
         }
         
 
         function canConvert(converter: Converter) {
-            const canAfford = Object
-                .entries(converter.inputs)
-                .every(([resName, qty]) =>
-                     resources[resName].quantity >= 
-                        qty * converter.multiplier()
+            const canAfford = converter.inputs
+                .every(({resource, quantity}) =>
+                     resources[resource].quantity >= quantity()
                 )
 
-            const notMaximumOutput = Object
-                .entries(converter.outputs)
-                .some(([resName, qty]) =>{
-                    return resources[resName].quantity < resources[resName].max
-                })
+            const notMaximumOutput = converter.outputs
+                .some(({resource: res}) =>
+                    resources[res].max >resources[res].quantity
+                )
 
             return canAfford && notMaximumOutput
         }
@@ -194,16 +217,18 @@ export const useResourcesStore = defineStore(
                 const converters = getConvertersOf(res)
                 converters.forEach(c => {
                     if (canConvert(c)) {
-                        Object.entries(c.inputs).forEach(([resName, qty]) => {
-                            removeResource(resName, qty*c.multiplier()*dtFactor)
-                        })
-                        Object.entries(c.outputs).forEach(([resName, qty]) => {
-                            addResource(resName, qty*c.multiplier()*dtFactor)
-                        })
+                        c.inputs.forEach(cons => removeResource (
+                            cons.resource, 
+                            cons.quantity()*dtFactor
+                        ))
+
+                        c.outputs.forEach(prod => addResource (
+                            prod.resource, 
+                            prod.quantity()*dtFactor
+                        ))
                     }
                 })
             })
-
         }
 
         function addResource(name: string, quantity: number) {
@@ -231,6 +256,8 @@ export const useResourcesStore = defineStore(
             getProducersOf,
             getConsumersOf,
             getConvertersOf,
+            getActiveConsumptionOf,
+            getActiveProductionOf,
             canConvert,
 
             getStorageOf,

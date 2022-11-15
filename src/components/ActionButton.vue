@@ -14,7 +14,6 @@ const button = ref<HTMLButtonElement>()
 
 function hoveringHandler(event: {currentTarget: EventTarget | null}) {
     ttStore.showSimpleTooltip({
-        type: 'simple',
         title: props.name,
         description: props.description,
         metadescription: props.metadescription,
@@ -25,13 +24,13 @@ function hoveringHandler(event: {currentTarget: EventTarget | null}) {
 
 <template>
     <button ref="button"
-            @mousemove="hoveringHandler"
+            @mouseenter="hoveringHandler"
             @focus="hoveringHandler"
             @blur="ttStore.hideTooltip"
             @mouseleave="ttStore.hideTooltip"
             @click="$emit('click')"
             class="action-button" :class="{}">
-        <span class="action-button__name">{{name}}</span>
+        <span class="action-button__name" v-html="name"></span>
     </button>
 </template>
 
@@ -40,7 +39,6 @@ function hoveringHandler(event: {currentTarget: EventTarget | null}) {
 .action-button {
     padding: var(--h-em-space) var(--x1_5-em-space);
     position: relative;
-    margin-right: var(--space);
 }
 
 .action-button__level {

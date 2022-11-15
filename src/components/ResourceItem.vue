@@ -1,35 +1,41 @@
 <script lang="ts" setup>
+import { computed } from '@vue/reactivity';
+import { ref } from 'vue';
 import { Resource } from '../app-types';
+import { LOC } from '../controllers/locale';
+import { getTooltipPositionForElement } from '../controllers/utils';
+import { AVAILABLE_EMOJIS, parseEmojis } from '../controllers/emoji';
 import { useTooltipsStore } from '../store/tooltip-store';
 
 const props = defineProps<Resource>()
 
-const safename = props.name.toLowerCase().replaceAll(' ', '-');
+                // FIXME: because typing...
+const name = computed(()=>LOC.resources[props.id as 'Souls'].name)
+const safename = props.id.toLowerCase().replaceAll(' ', '-');
 const textColor = `var(--color-resource-${safename})`
 
 const ttStore = useTooltipsStore()
-
-const imgSrc =
-    new URL(`/src/assets/icons/${safename}.svg`, import.meta.url).href
+const resDiv = ref()
 
 
-function mouseMoveHandler(event: MouseEvent) {
-    const position = {
-        x: event.clientX + 10,
-        y: event.clientY + 10
-    }
-    ttStore.showResourceTooltip(props, position)
+const emoji = computed(()=>parseEmojis(AVAILABLE_EMOJIS[props.id]))
+
+function resourceHover() {
+    ttStore.showResourceTooltip(
+        props, emoji.value, getTooltipPositionForElement(resDiv.value)
+    )
 }
 </script>
 
 
 <template>
-    <div @mousemove="mouseMoveHandler" 
-         @mouseleave="ttStore.hideTooltip"
+    <div ref="resDiv" @mouseenter="resourceHover" @focus="resourceHover" 
+         @mouseleave="ttStore.hideTooltip" @blur="ttStore.hideTooltip"
+        tabindex="1"
         class="resource" 
         :style="{ color: textColor }">
-        <img v-if="!emoji" :src="imgSrc" :alt="`Resource icon for ${name}`">
-        <i v-else class="resource__icon">{{ emoji }}</i>
+        <i class="resource__icon" v-html="emoji"></i>
+        <span class="resource__name">{{name}}</span>
         <span class="resource__quantity">
             {{ Math.floor(quantity).toFixed() }} / {{ max }}
         </span>
@@ -38,6 +44,7 @@ function mouseMoveHandler(event: MouseEvent) {
 
 <style>
 .resource {
+
     display: flex;
     align-items: center;
     width: 100%;
@@ -56,5 +63,11 @@ function mouseMoveHandler(event: MouseEvent) {
 
 .resource__quantity {
     margin-left: auto;
+}
+
+@media (max-width: 1024px) {
+    .resource__name {
+        display: none;
+    }
 }
 </style>

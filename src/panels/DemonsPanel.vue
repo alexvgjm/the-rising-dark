@@ -1,8 +1,9 @@
 <script lang="ts" setup>
 import { computed } from '@vue/reactivity';
 import DemonCard from '../components/DemonCard.vue';
-import { useBuildingsStore } from '../store/buildings-store';
+import { LOC } from '../controllers/locale';
 import { useDemonsStore } from '../store/demons-store';
+import impImgURL from "../assets/icons/imp.svg";
 
 const demonStore = useDemonsStore()
 const imps = computed(()=>demonStore.demons.filter(d => d.type == 'Imp'))
@@ -13,7 +14,10 @@ const imps = computed(()=>demonStore.demons.filter(d => d.type == 'Imp'))
 <template>
     <section class="panel demons__category imps ">
         <header class="panel__header imps_header">
-            <h1 class="panel__title">👿 Imps {{imps.length}}/{{demonStore.capacities['Imp']}}</h1>
+            <h1 class="panel__title"><img class="emoji" :src="impImgURL"> 
+                {{LOC.demons.types.plural.Imps}} 
+                {{imps.length}}/{{demonStore.capacities['Imp']}}
+            </h1>
         </header>
 
         <DemonCard v-for="imp in imps" :demon="imp"/>

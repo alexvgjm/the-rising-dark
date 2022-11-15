@@ -1,6 +1,7 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
 import { Building, Consumer, Point, Producer, Resource } from "../app-types";
+import { LOC } from "../controllers/locale";
 import { useResourcesStore } from "./resources-store";
 
 export type TooltipSectionContent = {
@@ -21,6 +22,7 @@ export interface SimpleTooltip extends Tooltip {
 
 export interface BuildingTooltip extends Tooltip {
     type: 'building'
+    building: Building,
     costs: {
         quantity: ()=>number,
         resource: string
@@ -29,6 +31,7 @@ export interface BuildingTooltip extends Tooltip {
 
 export interface ResourceTooltip extends Tooltip {
     type: 'resource'
+    resource: Resource,
     producers: Producer[],
     consumers: Consumer[]
 }
@@ -54,51 +57,39 @@ export const useTooltipsStore = defineStore(
         }
 
         function showBuildingTooltip(building: Building, targetPos: Point) {
+            const location = LOC.buildings[building.id as 'Jail']
             tooltip.value = {
                 type: 'building',
-                title: building.name,
-                description: building.description,
-                metadescription: building.metadescription,
+                building,
+                title: location.name,
+                description: location.description,
+                metadescription: location.metadescription,
                 costs: building.buildCost
             }
             show(targetPos)
         }
 
-        function showResourceTooltip(res: Resource, targetPos: Point) {
+        function showResourceTooltip(res: Resource, emoji: string, targetPos: Point) {
             position.value = targetPos
 
-            const consumers = resStore.getConsumersOf(res.name)
-            const producers = resStore.getProducersOf(res.name)
-            const converters = resStore.getConvertersOf(res.name)
+            const consumers = resStore.getConsumersOf(res.id)
+            const producers = resStore.getProducersOf(res.id)
+            const converters = resStore.getConvertersOf(res.id)
 
             converters.forEach(c => {
                 if ( !resStore.canConvert(c) ) { return }
                 
-                Object.entries(c.inputs).forEach(([cResName, qty]) =>{
-                    
-                    if (cResName != res.name || qty*c.multiplier() == 0) return
-                    consumers.push({
-                        description: c.description,
-                        resource: cResName,
-                        quantity: ()=>qty*c.multiplier()
-                    })
-                })
-
-                Object.entries(c.outputs).forEach(([cResName, qty]) =>{
-                    if (cResName != res.name || qty*c.multiplier() == 0) return
-                    producers.push({
-                        description: c.description,
-                        resource: cResName,
-                        quantity: ()=>qty*c.multiplier()
-                    })
-                })
+                consumers.push(...c.inputs.filter(c => c.resource == res.id))
+                producers.push(...c.outputs.filter(p => p.resource == res.id))
             })
             
             tooltip.value = {
                 type: 'resource',
-                title: res.emoji! + ' ' + res.name,
-                description: res.description,
-                metadescription: '',
+                resource: res,
+                                      //FIXME: cast as 'Souls' because typing...
+                title: emoji + ' ' +LOC.resources[res.id as 'Souls'].name,
+                description: LOC.resources[res.id as 'Souls'].description,
+                metadescription: LOC.resources[res.id as 'Souls'].metadescription,
                 consumers: consumers,
                 producers: producers
             }
@@ -106,8 +97,10 @@ export const useTooltipsStore = defineStore(
             show(targetPos)
         }
 
-        function showSimpleTooltip(params: SimpleTooltip, targetPos: Point) {
-            tooltip.value = {...params}
+        function showSimpleTooltip(params: {
+            title: string, description: string, metadescription: string
+        }, targetPos: Point) {
+            tooltip.value = {type: "simple", ...params}
             show(targetPos)
         }
 

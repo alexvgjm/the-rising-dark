@@ -1,6 +1,8 @@
 <script lang="ts" setup>
 import { computed, ref } from 'vue';
+import { LOC } from '../controllers/locale';
 import { experienceToReachLevel, getTooltipPositionForElement, remToPx } from '../controllers/utils';
+import { AVAILABLE_EMOJIS, parseEmojis } from '../controllers/emoji';
 import { Demon, DemonType, useDemonsStore } from '../store/demons-store';
 import { useTooltipsStore } from '../store/tooltip-store';
 import ProgressBar from './ProgressBar.vue';
@@ -24,21 +26,22 @@ const minExp = computed(()=>experienceToReachLevel(props.demon.level))
 const maxExp = computed(()=>experienceToReachLevel(props.demon.level+1))
 
 function professionHover() {
+
+    const profLocation =  // FIXME: using Rat hunter because typing...
+        LOC.professions[props.demon.profession.id as 'Rat hunter']
+
     tt.showSimpleTooltip({
-        type: 'simple',
-        title: props.demon.profession.name,
-        description: props.demon.profession.description,
-        metadescription: props.demon.profession.metadescription,
+        title: profLocation.name,
+        description: profLocation.description,
+        metadescription: profLocation.metadescription,
     }, getTooltipPositionForElement(profDiv.value!))
 }
 
 function exileHover() {
-    tt.showSimpleTooltip({
-        type:'simple',
-        title:'Exile', 
-        description: 'Get rid of this demon.',
-        metadescription: 'How to exile an exile?'
-    }, getTooltipPositionForElement(exileBtn.value!))
+    tt.showSimpleTooltip(
+        LOC.general.ui.demon.exileTooltip, 
+        getTooltipPositionForElement(exileBtn.value!)
+    )
 }
 
 function exileDemon() { demStore.exileDemon(props.demon) }
@@ -49,34 +52,45 @@ function exileDemon() { demStore.exileDemon(props.demon) }
 <template>
     <article class="demon">
         <header class="demon__header">
-            <h1 class="demon__name">{{demonEmojis[demon.type]}} {{demon.name}}</h1>
-            <div class="demon__type">{{demon.type}} <span class="demon__level">Level {{demon.level}}</span></div>
+            <h1 class="demon__name">
+                <i v-html="parseEmojis(AVAILABLE_EMOJIS[demon.type])"></i> 
+            {{demon.name}}</h1>
+            <div class="demon__type">{{LOC.demons.types[demon.type]}} 
+                <span class="demon__level">
+                    {{LOC.general.ui.demon.level}} 
+                    {{demon.level}}
+                </span>
+            </div>
         </header>
 
         <ProgressBar class="demon__experience-bar"
                      :min="minExp" :max="maxExp" 
                      :default-text="'percent'"
                      :hover-text="'valuesFromZero'"
-                     :current="demon.experience">Next level</ProgressBar>
+                     :current="demon.experience">
+                     {{LOC.general.ui.demon.nextLevel}}</ProgressBar>
 
         <ProgressBar class="demon__loyalty-bar"
                      :min="0" :max="100"
                      :default-text="'percent'"
                      :hover-text="'percent'"
-                     :current="demon.loyalty">Loyalty</ProgressBar>
+                     :current="demon.loyalty">
+                     {{LOC.general.ui.demon.loyalty}}</ProgressBar>
         
         <div class="demon__controls">
             <div class="demon__profession" ref="profDiv"
-                @mousemove="professionHover" @focus="professionHover"
+                @mouseenter="professionHover" @focus="professionHover"
                 @mouseleave="tt.hideTooltip" @blur="tt.hideTooltip">
-                {{demon.profession.name}}
+                {{ //@ts-ignore
+                    LOC.professions[demon.profession.id].name
+                }}
             </div>
 
             <button class="demon__exile-btn" ref="exileBtn"
                 @click="exiling = true"
-                @mousemove="exileHover" @focus="exileHover"
+                @mouseenter="exileHover" @focus="exileHover"
                 @mouseleave="tt.hideTooltip" @blur="tt.hideTooltip"
-            >Exile</button>
+            >{{LOC.general.ui.demon.exile}}</button>
         </div>
 
         <div v-if="exiling" 
@@ -85,7 +99,9 @@ function exileDemon() { demStore.exileDemon(props.demon) }
             <h2>Exile {{demon.name}}</h2>
             <div class="demon__exile-answers">
                 <button @click="exileDemon"
-                        class="demon__confirm-exile-btn">I'm sure, exile</button>
+                        class="demon__confirm-exile-btn">
+                    {{LOC.general.ui.demon.confirmExile}}
+                </button>
                 <button @click="exiling = false"
                         class="demon__forgive-exile-btn">Forgive</button>
             </div>

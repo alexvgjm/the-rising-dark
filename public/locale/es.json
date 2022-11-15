@@ -1,0 +1,149 @@
+{
+    "system": {
+        "greetings1": "Aguardábamos su llegada, supervisor. Soy Eknu Ulburas, Primera Sombra de la casa de Ulbur. Nos consta que el Rey Brujo le ha otorgado una segunda oportunidad en las tierras devastadas. No lo considere un exilio, debemos cumplir la voluntad del oscuro.",
+        
+        "greetings2": "No tenemos tiempo que perder, hay algunos humanos vagando por estas tierras y son muy conocidos por su tendencia a liberar su alma al morir. En este plano las almas son la principal moneda de cambio y una irresitible fuente de poder.",
+
+        "firstSoul": "Supervisor, acabamos de \"segar\" nuestra primera alma. Le recomiendo continuar dejando morir de hambre a los humanos. Al menos no se manchará de sangre.",
+
+        "firstDemon1": "Las almas acumuladas atraen a algunos demonios menores. Un 😈 Diablillo se nos ha unido. Los diablillos consumen almas pero pueden ayudarle con algunas tareas. Se mantendrán leales mientras consigan lo que quieren.",
+
+        "firstImpHut": "Mi Oscuro Señor, con tiendas para diablillos más de ellos se animarán a seguirnos. Llegarán más con el tiempo y no estoy seguro de que eso sea una buena noticia..."
+    },
+
+    "general": {
+        "humanDeath": {
+            "singular": "🎉 Un humano ha muerto.",
+            "plural": "🎉 ${quantity} humanos han muerto."
+        },
+        "reason": "Razón: ",
+        "deathReasons": {
+            "starvation": "hambre 🤣",
+            "ratHunting": "🐀 caza de ratas"
+        },
+        "ui": {
+            "demon": {
+                "level": "Nivel",
+                "nextLevel": "Siguiente nivel",
+                "loyalty": "Lealtad",
+                "confirmExile": "Sí, exiliar.",
+                "exile": "Exiliar",
+                "forgive": "Perdonar",
+                "exileTooltip": {
+                    "title": "Exiliar",
+                    "description": "Deshazte de este demonio.",
+                    "metadescription": "¿Cómo se exilia a un exiliado?"
+                }
+            },
+            "tabs": {
+                "resources": "⛏ Recursos",
+                "messages": "✉ Mensajes",
+                "buildings": "🌇 Edificios",
+                "demons": "😈 Demonios" 
+            },
+            "sections": {
+                "buildings": {
+                    "manualActions": "Acciones manuales",
+                    "population": "Población"
+                }
+            }
+        }
+    },
+
+    "demons": {
+        "types": {
+            "Imp": "Diablillo",
+            "Grunt": "Bruto",
+            "plural": {
+                "Imps": "Diablillos",
+                "Grunts": "Brutos"
+            }
+        }
+    },
+
+    "professions": {
+        "Rat hunter": {
+            "name": "Cazarratas",
+            "description": "Consigue 🐀 comida (+${ratHuntingFood}/s) por nivel. A veces mata humanos. Consigue experiencia con el paso del tiempo hasta llegar a nivel 5.",
+            "metadescription": "No es tan fácil distinguir humanos de ratas."
+        }
+    },
+
+    "resources": {
+        "Souls": {
+            "name": "Almas",
+            "description": "Tu recurso principal",
+            "metadescription": "Principal fuente de poder en este plano."
+        },
+        "Humans": {
+            "name": "Humanos",
+            "description": "Sueltan almas al morir.",
+            "metadescription": "Fuente de almas y diversión."
+        },
+        "Food": {
+            "name": "Comida",
+            "description": "Comida para humanos. Principalmente ratas.",
+            "metadescription": "Puede contener trazas de carne humana."
+        },
+        "Stones": {
+            "name": "Piedra",
+            "description": "Recurso principal de construcción.",
+            "metadescription": "Muy efectivas contra tijeras."
+        }
+    },
+    
+    "buildings": {
+        "manualActions": {
+            "Gather stones": {
+                "name": "🪨 Recolectar piedras",
+                "description": "Ordena a Eknu Ulburas y su séquito que recojan algunas piedras.",
+                "metadescription": "Cuidado con los gólems"
+            },
+            "Gather rats": {
+                "name": "🐀 Recolectar ratas",
+                "description": "Ordena a Eknu Ulburas y su séquito a cazar algunas ratas, alimento para humanos y otras criaturas inferiores.",
+                "metadescription": "Hay dos tipos de ratas: las que encontramos en los abundantes nidos y las que están jugando a The Rising Dark sin contribuir ni un céntimo en Patreon."
+            }
+        },
+
+        "Human pit": {
+            "name": "Foso humano",
+            "description": "Algunos humanos caen por accidente, otros nacen en él, otros solo buscan comida. 👨 ¡Más humanos! (+${humanPit10sHumans} cada 10 segundos) por 🐀 comida (-${humanPitFood}/s).",
+            "metadescription": "\"Obvio.\""
+        },
+
+        "Sacrificial pit": {
+            "name": "Foso de sacrificio",
+            "description": "Sacrifica ${sacrificialPit10sHumans} 👨 humano cada 10 segundos para obtener 🟣 almas.",
+            "metadescription": "Agujero equivocado."
+        },
+
+        "Jail": {
+            "name": "Jaula",
+            "description": "+1 al máximo de 👨 humanos.",
+            "metadescription": "Ninguno intentará escapar, no hay a donde ir."
+        },
+
+        "Imp hut": {
+            "name": "Choza de diablillo",
+            "description": "+1 al máximo de 😈 diablillos.",
+            "metadescription": ""
+        }
+    },
+
+    "consumers": {
+        "upkeeps": {
+            "Imp": {
+                "souls": "😈 Manutención de Diablillos"
+            }
+        },
+
+        "resources": {
+            "Humans": "Consumo humano"
+        },
+
+        "buildings": {
+            "Human pit": "Actividad del foso humano"
+        }
+    }
+}

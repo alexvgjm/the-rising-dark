@@ -2,14 +2,22 @@ import { computed, ComputedRef } from "@vue/reactivity";
 import { defineStore } from "pinia";
 import { reactive, toRaw } from "vue";
 import { Consumer, Converter, Producer } from "../app-types";
+import { CONSTANTS } from "../controllers/constants";
+import { LOC } from "../controllers/locale";
 import { levelFromExp, randomInt, randomPick, shuffle } from "../controllers/utils";
 import { useBuildingsStore } from "./buildings-store";
 
 
-export type Profession = {
+export type DemonCreationPayload = {
+    type: DemonType,
     name: string,
-    description: string,
-    metadescription: string,
+    experience: number,
+    loyalty: number, 
+    professionId: string
+}
+
+export type Profession = {
+    id: string,
     experience: {
         when: 'time' | 'success',
         amount: number
@@ -49,16 +57,14 @@ export const useDemonsStore = defineStore(
         const buildingStore = useBuildingsStore()
         const demons = reactive<Demon[]>([])
 
-        const baseCapacity: {[key: string]: number} = reactive({
+        const baseCapacity: {[key in DemonType]: number} = reactive({
             'Imp': 0,
             'Grunt': 0
         })
 
         const professions: {[key: string]: Profession} = {
             'Rat hunter': {
-                name: 'Rat hunter',
-                description: 'Gather 🐀 food (+0.05/s) per level. Sometimes kill humans. Brings some experience over time.',
-                metadescription: `It's not so easy to distinguish humans from rats.`,
+                id: 'Rat hunter',
                 experience: {
                     when: 'time',
                     amount: 1
@@ -66,23 +72,23 @@ export const useDemonsStore = defineStore(
                 producers: [{
                     resource: 'Food',
                     description: 'Rat hunting',
-                    quantity: ()=>0.05
+                    quantity: ()=>CONSTANTS.ratHuntingFood
                 }],
                 consumers: [],
                 converters: []
             }
         }
 
-        const availableProfession = {
-            'Imp': ['Rat hunter'],
-            'Grunt': ['Rat hunter']
+        const availableProfession: {[key in DemonType]: string[]} = {
+            Imp: ['Rat hunter'],
+            Grunt: ['Rat hunter']
         }
 
         const upkeeps: {[key: string]: Consumer[]} = {
             'Imp': [{
-                description: 'Imp souls upkeep',
+                description: LOC.consumers.upkeeps.Imp.souls,
                 resource: 'Souls',
-                quantity: ()=>0.01
+                quantity: ()=>CONSTANTS.impSoulsUpkeep
             }],
             'Grunt': []
         }
@@ -100,14 +106,27 @@ export const useDemonsStore = defineStore(
             return name ? name : pool[0]
         }
 
-        function newDemon(type: DemonType) {
-            const name = getFreeName(type)
-            const professionName = randomPick(availableProfession[type])
-
-            const newDemon: Demon = {
-                name, type, 
+        function newRandomDemon(type: DemonType) {
+            const creationPayload: DemonCreationPayload = {
+                type,
+                name: getFreeName(type),
+                professionId: randomPick(availableProfession[type]),
                 experience: randomInt(1, 150),
                 loyalty: randomInt(30, 70),
+            }
+
+            newCustomDemon(creationPayload)
+        }
+
+        function newCustomDemon(demon: DemonCreationPayload) {
+            const name = demon.name
+            const professionName = demon.professionId
+            
+            const newDemon: Demon = {
+                name, 
+                type: demon.type, 
+                experience: demon.experience,
+                loyalty: demon.loyalty,
                 profession: {...professions[professionName]},
                 upkeep: [],
                 get level() { return levelFromExp(this.experience)},
@@ -121,9 +140,9 @@ export const useDemonsStore = defineStore(
                     }
                 })
             
-            newDemon.upkeep = upkeeps[type].map<Consumer>(cons => { return {
+            newDemon.upkeep = upkeeps[demon.type].map<Consumer>(cons => { return {
                 ...cons,
-                quantity: () => cons.quantity() * (newDemon.level / 3)
+                quantity: () => Math.max(0.01, cons.quantity() * (newDemon.level / 3))
             }})
             
             demons.push(newDemon)
@@ -135,7 +154,8 @@ export const useDemonsStore = defineStore(
                 computed(()=> Object.values(buildingStore.buildingDemonCapacity)
                 .flat()
                 .filter((dc) => dc.demon == dType)
-                .reduce((acc, dc) => acc + dc.capacity(), baseCapacity[dType]))
+                .reduce((acc, dc) => acc + dc.capacity(), 
+                        baseCapacity[dType as DemonType]))
         )
 
         function exileDemon(demon: Demon) {
@@ -144,6 +164,11 @@ export const useDemonsStore = defineStore(
                 demons.splice(pos, 1)
             }
         }
-        return {demons, baseCapacity, capacities, newDemon, exileDemon }
+        return {demons, 
+                baseCapacity, 
+                capacities, 
+                newRandomDemon,
+                newCustomDemon,
+                exileDemon }
     }
 )
