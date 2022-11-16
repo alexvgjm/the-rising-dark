@@ -46,6 +46,11 @@
                     "manualActions": "Manual actions",
                     "population": "Population"
                 }
+            },
+
+            "buildings": {
+                "enable": "Enable one",
+                "disable": "Disable one"
             }
         }
     },

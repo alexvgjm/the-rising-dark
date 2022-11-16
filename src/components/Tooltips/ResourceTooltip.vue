@@ -7,7 +7,8 @@ const tt = useTooltipsStore()
 
 
 <template>
-    <section class="tooltip tooltip--resource" :style="{ left: tt.position.x + 'px', top: tt.position.y + 'px' }">
+    <section class="tooltip tooltip--resource" 
+            :style="{ left: tt.position.x + 'px', top: tt.position.y + 'px' }">
 
         <h1 class="tooltip__title" v-html="tt.tooltip.title"></h1>
 

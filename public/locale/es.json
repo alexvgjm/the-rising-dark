@@ -46,6 +46,10 @@
                     "manualActions": "Acciones manuales",
                     "population": "Población"
                 }
+            },
+            "buildings": {
+                "enable": "Habilitar 1",
+                "disable": "Deshabilitar 1"
             }
         }
     },

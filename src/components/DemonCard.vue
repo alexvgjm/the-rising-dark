@@ -124,7 +124,7 @@ function exileDemon() { demStore.exileDemon(props.demon) }
 
 <style>
 .demon {
-    display: flex;
+    display: inline-flex;
     flex-flow: column;
     width: fit-content;
     position: relative;
@@ -132,8 +132,8 @@ function exileDemon() { demStore.exileDemon(props.demon) }
     box-shadow: var(--default-box-shadow);
     background: var(--color-background);
     border-radius: var(--border-radius);
-    margin-top: var(--space);
-    min-width: 20rem;
+    width: 100%;
+    margin-right: var(--x2-space);
 }
 .demon__exile-modal {
     display: flex;
@@ -212,4 +212,18 @@ function exileDemon() { demStore.exileDemon(props.demon) }
     align-items: flex-end;
 }
 
+@media(max-width: 1024px) {
+    .demon__controls {
+        margin-top: var(--h-space);
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+    .demon__profession {
+        width: 100%;
+    }
+    .demon__exile-btn {
+        font-size: var(--lesser-font-size);
+    }
+}
 </style>

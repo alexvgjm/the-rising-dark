@@ -7,8 +7,7 @@ const tt = useTooltipsStore()
 
 
 <template>
-    <section v-if="tt.visible && tt.tooltip.type == 'simple'"
-            class="tooltip tooltip--simple"
+    <section class="tooltip tooltip--simple"
             :style="{left: tt.position.x + 'px', top: tt.position.y + 'px'}">
         <h1 class="tooltip__title" v-html="tt.tooltip.title"></h1>
 

@@ -7,11 +7,15 @@
         --color-warning-light:  hsl(63, 100%, 88%);
         --color-warning:        hsl(64, 82%, 68%);
 
+        --color-success-lightest:  hsl(120, 100%, 95%);
         --color-success-light:  hsl(120, 100%, 88%);
         --color-success:        hsl(120, 82%, 68%);
+        --color-success-dark:   hsl(120, 46%, 49%);
+        --color-success-darky:  rgb(77, 139, 77);
 
         --color-danger-light:  hsl(0, 100%, 82%);
         --color-danger:        hsl(0, 79%, 55%);
+        --color-danger-darky:   hsl(0, 68%, 38%);
         --color-danger-dark:   hsl(0, 59%, 25%);
         --color-danger-darkest:   hsl(0, 59%, 10%);
     
@@ -71,6 +75,7 @@
         --min-font-size   : 0.33rem;
     
         --space      : 1rem;
+        --x0_75-space : calc(var(--space) * 0.75);
         --h-space    : calc(var(--space) / 2);
         --q-space    : calc(var(--space) / 4);
         --d-space    : calc(var(--space) / 10);
@@ -79,7 +84,8 @@
         --x3-space   : calc(var(--space) * 3);
         --x4-space   : calc(var(--space) * 4);
     
-        --em-space        : 1em;
+        --em-space        : 1em; 
+        --x0_75-em-space  : calc(var(--em-space) * 0.75);
         --h-em-space      : calc(var(--em-space) / 2);
         --q-em-space      : calc(var(--em-space) / 4);
         --d-em-space      : calc(var(--em-space) / 10);    

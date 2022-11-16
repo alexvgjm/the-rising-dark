@@ -41,6 +41,7 @@ export type Resource = {
 export type Building = {
     id: string,
     level: number,
+    active?: number,
     unlock: boolean,
 
     buildCost: {

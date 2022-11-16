@@ -20,7 +20,9 @@ const imps = computed(()=>demonStore.demons.filter(d => d.type == 'Imp'))
             </h1>
         </header>
 
-        <DemonCard v-for="imp in imps" :demon="imp"/>
+        <div class="demons__list">
+            <DemonCard v-for="imp in imps" :demon="imp"/>
+        </div>
     </section>
 </template>
 
@@ -29,6 +31,14 @@ const imps = computed(()=>demonStore.demons.filter(d => d.type == 'Imp'))
 
 .demons__category {
     margin-top: 1rem;
+}
+
+.demons__list {
+    margin-top: var(--space);
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
+    gap: var(--space);
 }
 
 </style>

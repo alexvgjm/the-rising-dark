@@ -4,7 +4,7 @@ button {
     margin-top: var(--h-space);
     background: var(--color-background-darky);
     color: var(--color-primary);
-    border: var(--em-border-size) solid var(--color-primary);
+    border: var(--em-border-size) solid var(--color-third);
     padding: var(--q-em-space) var(--h-em-space);
     border-radius: var(--border-radius);
     font-size: var(--biggy-font-size);

@@ -17,20 +17,22 @@ export const useBuildingsStore = defineStore(
             'Human pit': {
                 id: 'Human pit',
                 level: 0,
+                active: 0,
                 buildCost: [{
                     resource: 'Stones',
                     quantity: () =>
-                        Math.floor(250 + 250 * buildings['Human pit'].level * 1.01),
+                        Math.floor(250 + 250 * buildings['Human pit'].level ** 1.05),
                 }],
                 unlock: true
             },
             'Sacrificial pit': {
                 id: 'Sacrificial pit',
                 level: 0,
+                active: 0,
                 buildCost: [{
                     resource: 'Stones',
                     quantity: () =>
-                        Math.floor(250 + 250 * buildings['Sacrificial pit'].level * 1.01),
+                        Math.floor(250 + 250 * buildings['Sacrificial pit'].level! ** 1.05),
                 }],
                 unlock: computed(() => statsStore.achievements['First demon'].achieved) as unknown as boolean
             },
@@ -40,24 +42,24 @@ export const useBuildingsStore = defineStore(
                 buildCost: [{
                     resource: 'Stones',
                     quantity: () =>
-                        Math.floor(100 + 100 * buildings['Jail'].level * 1.02),
+                        Math.floor(100 + 100 * buildings['Jail'].level ** 1.05),
                 }],
                 unlock: true
             },
             'Imp hut': {
                 id: 'Imp hut',
+                level: 0,
                 buildCost: [{
                     resource: 'Stones',
                     quantity: () => Math.floor(
-                        800 + 500 * buildings['Imp hut'].level * 1.08
+                        800 + 1200 * buildings['Imp hut'].level * 3
                     )
                 }, {
                     resource: 'Souls',
                     quantity: () => Math.floor(
-                        20 + 30 * buildings['Imp hut'].level * 1.08
+                        20 + 30 * buildings['Imp hut'].level * 3
                     )
                 }],
-                level: 0,
                 unlock: computed(() => statsStore.achievements['First demon'].achieved) as unknown as boolean
             }
         })
@@ -69,12 +71,12 @@ export const useBuildingsStore = defineStore(
                 {
                     inputs: [{
                         resource: 'Food',
-                        quantity: ()=>CONSTANTS.humanPitFood * buildings['Human pit'].level,
+                        quantity: ()=>CONSTANTS.humanPitFood * buildings['Human pit'].active!,
                         description: LOC.consumers.buildings['Human pit']
                     }],
                     outputs: [{
                         resource: 'Humans',
-                        quantity: ()=>CONSTANTS.humanPitHumans * buildings['Human pit'].level,
+                        quantity: ()=>CONSTANTS.humanPitHumans * buildings['Human pit'].active!,
                         description: LOC.consumers.buildings['Human pit']
                     }]
                 }
@@ -83,12 +85,12 @@ export const useBuildingsStore = defineStore(
                 {
                     inputs: [{
                         resource: 'Humans',
-                        quantity: ()=>buildings['Sacrificial pit'].level * 0.1,
+                        quantity: ()=>buildings['Sacrificial pit'].active! * 0.1,
                         description: LOC.consumers.buildings['Sacrificial pit']
                     }],
                     outputs: [{
                         resource: 'Souls',
-                        quantity: ()=>buildings['Sacrificial pit'].level * 0.1,
+                        quantity: ()=>buildings['Sacrificial pit'].active! * 0.1,
                         description: LOC.consumers.buildings['Sacrificial pit']
                     }]
                 }
@@ -126,6 +128,18 @@ export const useBuildingsStore = defineStore(
             })
 
             building.level++
+            if (building.active !== undefined) { building.active++ }
+        }
+
+        function enable(id: string) {
+            const b = buildings[id]
+            if (b.active === undefined) { return }
+            b.active = Math.min(b.active + 1, b.level)
+        }
+        function disable(id: string) {
+            const b = buildings[id]
+            if (b.active === undefined) { return }
+            b.active = Math.max(b.active - 1, 0)
         }
         return {
             buildings,
@@ -134,7 +148,9 @@ export const useBuildingsStore = defineStore(
             buildingConverters,
             buildingStorage,
             buildingDemonCapacity,
-            build
+            build,
+            enable,
+            disable
         }
     }
 )

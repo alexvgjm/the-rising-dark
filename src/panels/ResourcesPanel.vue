@@ -41,7 +41,7 @@ const resStore = useResourcesStore()
     justify-content: space-between;
 }
 
-@media (max-width: 1024pxpx) {
+@media (max-width: 1280px) {
     .resources {
         width: 15rem;
         min-width: 15rem;

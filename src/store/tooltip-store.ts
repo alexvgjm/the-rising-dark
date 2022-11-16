@@ -31,6 +31,11 @@ export interface BuildingTooltip extends Tooltip {
     }[]
 }
 
+export interface MiniTooltip {
+    title: string,
+    text: string
+}
+
 export interface ResourceTooltip extends Tooltip {
     type: 'resource'
     resource: Resource,
@@ -43,6 +48,11 @@ export const useTooltipsStore = defineStore(
     () => {
         const resStore = useResourcesStore()
 
+        const minitooltip = ref<MiniTooltip>({
+            text: '',
+            title: ''
+        })
+
         const tooltip = ref<SimpleTooltip|BuildingTooltip|ResourceTooltip>({
             type: 'simple',
             title: 'Tooltip',
@@ -52,6 +62,7 @@ export const useTooltipsStore = defineStore(
 
         const visible = ref(false)
         const position = ref({x: 0, y: 0})
+        const miniposition = ref({x: 0, y: 0})
 
         function show(targetPosition: Point) {
             position.value = targetPosition
@@ -121,14 +132,24 @@ export const useTooltipsStore = defineStore(
             show(targetPos)
         }
 
+        function showMiniTooltip(params: MiniTooltip, targetPos: Point) {
+            miniposition.value = targetPos
+            minitooltip.value = params
+        }
+
+        function hideMiniTooltip() {
+            minitooltip.value.text = ''
+        }
+
         function hideTooltip() {
-           visible.value = false
+            visible.value = false
         }
 
         return {
-            tooltip, visible, position,
+            tooltip, visible, position, minitooltip, miniposition,
             showBuildingTooltip, hideTooltip, showResourceTooltip,
-            showSimpleTooltip, showUpkeepTooltip
+            showSimpleTooltip, showUpkeepTooltip, showMiniTooltip, 
+            hideMiniTooltip
         }
     }
 )

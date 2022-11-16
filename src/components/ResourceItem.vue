@@ -63,14 +63,17 @@ function resourceHover() {
     margin-left: auto;
 }
 
+@media (max-width: 1280px) {
+    .resource__name {
+        display: none;
+    }
+}
 @media (max-width: 1024px) {
     .resource {
         width: fit-content;
         padding: var(--q-space) var(--space);
         border: none;
     }
-    .resource__name {
-        display: none;
-    }
+
 }
 </style>

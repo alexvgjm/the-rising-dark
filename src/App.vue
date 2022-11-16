@@ -1,15 +1,18 @@
 <script setup lang="ts">
+// COMPONENTS
 import ResourcesPanel from './panels/ResourcesPanel.vue';
 import Main from './panels/Main.vue';
 import MessagesPanel from './panels/MessagesPanel.vue';
 import SimpleTooltip from './components/Tooltips/SimpleTooltip.vue';
-import { inject, onMounted, ref } from 'vue';
 import BuildingTooltip from './components/Tooltips/BuildingTooltip.vue';
 import ResourceTooltip from './components/Tooltips/ResourceTooltip.vue';
-import { preload, startGame } from "./controllers/general";
-import { SaveGame } from "./controllers/save-load";
+import MiniTooltip from './components/Tooltips/MiniTooltip.vue';
 import LanguageSelection from './panels/LanguageSelection.vue';
 import MainHeader from './panels/MainHeader.vue';
+
+import { onMounted, ref } from 'vue';
+import { preload, startGame } from "./controllers/general";
+import { SaveGame } from "./controllers/save-load";
 import { setLoc } from './controllers/locale';
 import { useTooltipsStore } from './store/tooltip-store';
 
@@ -93,6 +96,7 @@ function start() {
       <MessagesPanel />
     </main>
 
+    <MiniTooltip     v-if="tt.minitooltip.text" />
     <SimpleTooltip   v-if="tt.visible && tt.tooltip.type == 'simple'"/>
     <BuildingTooltip v-if="tt.visible && tt.tooltip.type == 'building'"/>
     <ResourceTooltip v-if="tt.visible && tt.tooltip.type == 'resource'"/>
