@@ -18,6 +18,7 @@ export interface Producer {
     quantity: ()=>number
 }
 export interface Converter {
+    id: string,
     inputs: Consumer[]
     outputs: Producer[]
 }
@@ -59,7 +60,9 @@ export type Building = {
         resource: string,
         base: number,
         factor: number
-    }[]
+    }[],
+
+    type: 'population' | 'resources'
 }
 
 export type ManualAction = {

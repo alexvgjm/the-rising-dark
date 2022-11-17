@@ -20,6 +20,12 @@ const manualActions = computed(() => {
         }
     },
     {
+        name: LOC.buildings.manualActions['Gather bones'].name,
+        description: LOC.buildings.manualActions['Gather bones'].description,
+        metadescription: LOC.buildings.manualActions['Gather bones'].metadescription,
+        effect: () => { resStore.addResource('Bones', randomInt(5, 20)) }
+    },
+    {
         name: LOC.buildings.manualActions['Gather rats'].name,
         description: LOC.buildings.manualActions['Gather rats'].description,
         metadescription: LOC.buildings.manualActions['Gather rats'].metadescription,
@@ -27,7 +33,7 @@ const manualActions = computed(() => {
     }]
 })
 
-const unlockedBuildings = computed(() =>
+const unlocked = computed(() =>
     Object.values(buildingStore.buildings)
           .filter(b => b.unlock))
 const resStore = useResourcesStore()
@@ -44,25 +50,38 @@ const resStore = useResourcesStore()
 
         
         <div class="buildings__buttons">
-            <ActionButton v-for="mAction, index in manualActions" 
+            <ActionButton v-for="mAction in manualActions" 
             @click="mAction.effect" 
             v-bind="mAction" :key="mAction.name"/>
         </div>
     </section>
 
     <section class="panel population">
-        <header class="panel__header population__header">
+        <header class="panel__header buildings__population">
             <h1 class="panel__title">
                 {{ LOC.general.ui.sections.buildings.population }}
             </h1>
         </header>
 
         <div class="buildings__buttons">
-            <BuildingButton v-for="building in unlockedBuildings" 
-                            v-bind="building" />
+            <BuildingButton 
+                v-for="b in unlocked.filter(b => b.type == 'population')" 
+                v-bind="b" />
         </div>
+    </section>
 
+    <section class="panel resources-section">
+        <header class="panel__header buildings__resources">
+            <h1 class="panel__title">
+                {{ LOC.general.ui.sections.buildings.resources }}
+            </h1>
+        </header>
 
+        <div class="buildings__buttons">
+            <BuildingButton 
+                v-for="b in unlocked.filter(b => b.type == 'resources')" 
+                v-bind="b" />
+        </div>
     </section>
 </template>
 

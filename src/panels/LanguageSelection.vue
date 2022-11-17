@@ -1,12 +1,10 @@
 <script lang="ts" setup>
+import { langs } from '../controllers/locale';
+
 defineEmits<{
     (e: 'langSelected', lang: string): void
 }>()
 
-const langs = {
-    'en': 'English',
-    'es': 'Español'
-}
 </script>
 
 <template>

@@ -15,8 +15,7 @@ export function startGeneralEventsModule() {
 
 let starvationThreshold = 0
 function checkStarvation() {
-    const noFood = stores.resStore.resources['Food'].quantity <
-                   stores.resStore.resources['Humans'].quantity * 0.25
+    const noFood = stores.resStore.resources['Food'].quantity < 1
     const thereAreHumans = stores.resStore.resources['Humans'].quantity > 0
     
     if (noFood && thereAreHumans) {

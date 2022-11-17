@@ -18,6 +18,10 @@ const statsStore = useStatsStore()
                         to="/demons"
                         class="main-nav__link"
                         v-html="LOC.general.ui.tabs.demons" />
+
+            <RouterLink to="/settings"
+                        class="main-nav__link"
+                        v-html="LOC.general.ui.tabs.settings" />
         </nav>
 
 
@@ -47,6 +51,7 @@ const statsStore = useStatsStore()
     border: var(--border-size) solid var(--color-primary);
     border-bottom-color: transparent;
     border-radius: 0.25rem 0.25rem 0 0;
+    background: var(--color-background-dark);
 }
 .main-nav__link:hover {
     color: var(--color-second);
@@ -54,9 +59,12 @@ const statsStore = useStatsStore()
     border-bottom-color: transparent;
 }
 
+.main-nav__link:last-child {
+    margin-left: auto;
+}
+
 .main-nav__link--active,
 .main-nav__link--active:hover {
-    background: var(--color-background-dark);
     color: var(--color-second);
     font-size: var(--1_25x-font-size);
     border-color: var(--color-second);

@@ -117,8 +117,8 @@ export const useTooltipsStore = defineStore(
             tooltip.value = {
                 type: "resource",
                 resource: resStore.resources['Souls'], // dummy
-                description: "Loyalty will decrease if upkeep not fulfilled",
-                title: "Upkeep",
+                description: LOC.general.ui.demon.upkeepDescription,
+                title: LOC.general.ui.demon.upkeep,
                 consumers: demon.upkeep.map((c) => {
                     return {
                         ...c,

@@ -16,7 +16,8 @@ export const useResourcesStore = defineStore(
             'Souls': 200,
             'Humans': 3,
             'Food': 100,
-            'Stones': 1000
+            'Stones': 1000,
+            'Bones': 1000,
         })
         
         const resources = reactive<{ [key: string]: Resource }>({
@@ -39,6 +40,11 @@ export const useResourcesStore = defineStore(
                 id: 'Stones',
                 quantity: 0,
                 max: computed(()=>getStorageOf('Stones')) as unknown as number
+            },
+            'Bones': {
+                id: 'Bones',
+                quantity: 0,
+                max: computed(()=>getStorageOf('Bones')) as unknown as number
             }
         })
 
@@ -58,7 +64,7 @@ export const useResourcesStore = defineStore(
             "Humans": [{
                 description: LOC.consumers.resources['Humans'],
                 resource: 'Food',
-                quantity: () => Math.floor(resources['Humans'].quantity) * 0.25
+                quantity: () => Math.floor(resources['Humans'].quantity) * 0.15
             }]
         })
 
@@ -73,7 +79,7 @@ export const useResourcesStore = defineStore(
                 Object.values(buildingsStore.buildingConsumptions)
                       .flat()
                       .filter(cons => cons.resource == resId)
-
+            
             const fromDemonsConsumers: Consumer[] =
                 demonsStore.demons.map(d => d.profession.consumers)
                                   .flat()
@@ -155,7 +161,7 @@ export const useResourcesStore = defineStore(
                                     .filter(c => c.quantity() != 0)
 
             const converterConsumers = getConvertersOf(resId)
-                                        .filter(conv => canConvert(conv))
+                                       // .filter(conv => canConvert(conv))
                                         .map(conv => conv.inputs)
                                         .flat()
                                         .filter(c => c.resource == resId &&
@@ -173,7 +179,7 @@ export const useResourcesStore = defineStore(
                                     .filter(c => c.quantity() != 0)
 
             const converterProducers = getConvertersOf(resId)
-                                        .filter(conv => canConvert(conv))
+                                       // .filter(conv => canConvert(conv))
                                         .map(conv => conv.outputs)
                                         .flat()
                                         .filter(p => p.resource == resId &&
@@ -225,12 +231,14 @@ export const useResourcesStore = defineStore(
 
             const totalProd = prods.reduce((acc, p) => acc + p.quantity(), 0)
             const totalCons = consu.reduce((acc, c) => acc + c.quantity(), 0)
-
+            
             return totalProd - totalCons
         }
 
         function updateResources(delta: number) {
             const dtFactor = delta/1000
+
+            const triggeredConverters = new Set<string>()
             
             Object.keys(resources).forEach(res => {
                 const total = getTotalProductionOf(res)
@@ -239,19 +247,28 @@ export const useResourcesStore = defineStore(
                 } else if (total > 0) {
                     addResource(res, total * dtFactor)
                 }
-                    
+                
                 const converters = getConvertersOf(res)
                 converters.forEach(c => {
-                    if (canConvert(c)) {
-                        c.inputs.forEach(cons => removeResource (
-                            cons.resource, 
-                            cons.quantity()*dtFactor
-                        ))
+                    if (!triggeredConverters.has(c.id) && canConvert(c)) {
+                        triggeredConverters.add(c.id)
 
-                        c.outputs.forEach(prod => addResource (
-                            prod.resource, 
-                            prod.quantity()*dtFactor
-                        ))
+                       
+                        c.inputs
+                        .forEach(cons => {
+                            removeResource (
+                                cons.resource, 
+                                cons.quantity()*dtFactor
+                            )
+                        })
+
+                        c.outputs
+                        .forEach(prod => {
+                            addResource(
+                                prod.resource, 
+                                prod.quantity()*dtFactor
+                            )
+                        })
                     }
                 })
             })
@@ -259,7 +276,6 @@ export const useResourcesStore = defineStore(
 
         function addResource(name: string, quantity: number) {
             const resource = resources[name]
-            
 
             resource.quantity += quantity
 
@@ -270,6 +286,7 @@ export const useResourcesStore = defineStore(
 
         function removeResource(name: string, quantity: number) {
             const resource = resources[name]
+
             resource.quantity -= quantity
 
             if(resource.quantity < 0) { resource.quantity = 0 }

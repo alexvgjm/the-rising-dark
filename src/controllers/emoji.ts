@@ -3,13 +3,15 @@ import stoneImg from "../assets/icons/stone.svg"
 import impImg from "../assets/icons/imp.svg"
 import ratImg from "../assets/icons/rat.svg"
 import humanImg from "../assets/icons/human.svg"
+import boneImg from "../assets/icons/bones.svg"
 
 const parseableEmojis = {
     '🟣': soulImg,
     '🪨': stoneImg,
     '😈': impImg,
     '🐀': ratImg,
-    '👨': humanImg,/*
+    '👨': humanImg,
+    '🦴': boneImg/*
     '👺': 'grunt',
     '🌇': 'imp',
     '🙍‍♂️': 'human',
@@ -23,6 +25,7 @@ const parseableEmojis = {
 export const AVAILABLE_EMOJIS: {[key: string]: string} = {
     'Souls' : '🟣',
     'Stones' : '🪨',
+    'Bones' : '🦴',
     'Imp' : '😈',
     'Food' : '🐀',
     'Grunt' : '👺',

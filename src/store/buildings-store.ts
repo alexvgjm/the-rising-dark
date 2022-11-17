@@ -16,6 +16,7 @@ export const useBuildingsStore = defineStore(
         const buildings: { [key: string]: Building } = reactive<{ [key: string]: Building }>({
             'Human pit': {
                 id: 'Human pit',
+                type: 'resources',
                 level: 0,
                 active: 0,
                 buildCost: [{
@@ -27,20 +28,31 @@ export const useBuildingsStore = defineStore(
             },
             'Sacrificial pit': {
                 id: 'Sacrificial pit',
+                type: 'resources',
                 level: 0,
                 active: 0,
                 buildCost: [{
                     resource: 'Stones',
                     quantity: () =>
                         Math.floor(250 + 250 * buildings['Sacrificial pit'].level! ** 1.05),
+                },{
+                    resource: 'Bones',
+                    quantity: () =>
+                        Math.floor(250 + 250 * buildings['Sacrificial pit'].level ** 1.05),
                 }],
                 unlock: computed(() => statsStore.achievements['First demon'].achieved) as unknown as boolean
             },
             'Jail': {
                 id: 'Jail',
+                type: 'population',
                 level: 0,
                 buildCost: [{
                     resource: 'Stones',
+                    quantity: () =>
+                        Math.floor(25 + 25 * buildings['Jail'].level ** 1.05),
+                },
+                {
+                    resource: 'Bones',
                     quantity: () =>
                         Math.floor(100 + 100 * buildings['Jail'].level ** 1.05),
                 }],
@@ -48,16 +60,23 @@ export const useBuildingsStore = defineStore(
             },
             'Imp hut': {
                 id: 'Imp hut',
+                type: 'population',
                 level: 0,
                 buildCost: [{
                     resource: 'Stones',
                     quantity: () => Math.floor(
-                        800 + 1200 * buildings['Imp hut'].level * 3
+                        400 + 1000 * buildings['Imp hut'].level**1.12 * 3
                     )
-                }, {
+                }, 
+                {
+                    resource: 'Bones',
+                    quantity: () => Math.floor(
+                        400 + 1000 * buildings['Imp hut'].level**1.12 * 3
+                    )
+                },{
                     resource: 'Souls',
                     quantity: () => Math.floor(
-                        20 + 30 * buildings['Imp hut'].level * 3
+                        20 + 80 * buildings['Imp hut'].level**1.12 *3
                     )
                 }],
                 unlock: computed(() => statsStore.achievements['First demon'].achieved) as unknown as boolean
@@ -69,6 +88,7 @@ export const useBuildingsStore = defineStore(
         const buildingConverters: { [key: string]: Converter[] } = {
             'Human pit': [
                 {
+                    id: 'Human pit',
                     inputs: [{
                         resource: 'Food',
                         quantity: ()=>CONSTANTS.humanPitFood * buildings['Human pit'].active!,
@@ -83,6 +103,7 @@ export const useBuildingsStore = defineStore(
             ],
             'Sacrificial pit': [
                 {
+                    id: 'Sacrificial pit',
                     inputs: [{
                         resource: 'Humans',
                         quantity: ()=>buildings['Sacrificial pit'].active! * 0.1,
@@ -91,6 +112,11 @@ export const useBuildingsStore = defineStore(
                     outputs: [{
                         resource: 'Souls',
                         quantity: ()=>buildings['Sacrificial pit'].active! * 0.1,
+                        description: LOC.consumers.buildings['Sacrificial pit']
+                    },
+                    {
+                        resource: 'Bones',
+                        quantity: ()=>buildings['Sacrificial pit'].active! * 0.4,
                         description: LOC.consumers.buildings['Sacrificial pit']
                     }]
                 }

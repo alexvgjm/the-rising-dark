@@ -33,19 +33,25 @@
                     "title": "Exiliar",
                     "description": "Deshazte de este demonio.",
                     "metadescription": "¿Cómo se exilia a un exiliado?"
-                }
+                },
+                "upkeep": "Manutención",
+                "upkeepDescription": "La lealtadad crecerá con el tiempo mientras se pague la manutención de este demonio. Decrecerá rápidamente si no tiene lo que quiere."
             },
             "tabs": {
                 "resources": "⛏ Recursos",
                 "messages": "✉ Mensajes",
                 "buildings": "🌇 Edificios",
-                "demons": "😈 Demonios" 
+                "demons": "😈 Demonios",
+                "settings": "⚙️ Ajustes" 
             },
             "sections": {
                 "buildings": {
                     "manualActions": "Acciones manuales",
                     "population": "Población"
                 }
+            },
+            "settings": {
+                "language": "Idioma"
             },
             "buildings": {
                 "enable": "Habilitar 1",
@@ -62,6 +68,10 @@
                 "Imps": "Diablillos",
                 "Grunts": "Brutos"
             }
+        },
+
+        "messages": {
+            "demonSpawn": "${demonName} (${demonEmoji} ${demonType} de nivel ${demonLevel}) se ha unido a nosotros."
         }
     },
 
@@ -89,6 +99,11 @@
             "description": "Comida para humanos. Principalmente ratas.",
             "metadescription": "Puede contener trazas de carne humana."
         },
+        "Bones": {
+            "name": "Huesos",
+            "description": "Recurso para creación de herramientas, construcción, rituales y mucho más.",
+            "metadescription": "El material más reutilizable de estas tierras."
+        },
         "Stones": {
             "name": "Piedra",
             "description": "Recurso principal de construcción.",
@@ -102,6 +117,11 @@
                 "name": "🪨 Recolectar piedras",
                 "description": "Ordena a Eknu Ulburas y su séquito que recojan algunas piedras.",
                 "metadescription": "Cuidado con los gólems"
+            },
+            "Gather bones": {
+                "name": "🦴 Gather bones",
+                "description": "Ordena a Eknu Ulburas y su séquito a recoger algunos huesos.",
+                "metadescription": "Un recurso prácticamente infinito en estas tierras."
             },
             "Gather rats": {
                 "name": "🐀 Recolectar ratas",

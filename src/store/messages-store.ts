@@ -1,5 +1,6 @@
 import { defineStore } from "pinia";
 import { reactive } from "vue";
+import { parseEmojis } from "../controllers/emoji";
 
 
 export type MessageOptions = {
@@ -32,7 +33,7 @@ export const useMessagesStore = defineStore(
             const date = new Date()
             const hours = date.getHours().toString().padStart(2, '0')
             const minutes = date.getMinutes().toString().padStart(2, '0')
-
+            text = parseEmojis(text)
             const newMsg = {text, type, hour: hours + ':' + minutes, options}
             if(messages.length > 0 && options?.replaceOnRepeat
             && messages[0].options?.replaceOnRepeat == options.replaceOnRepeat) {

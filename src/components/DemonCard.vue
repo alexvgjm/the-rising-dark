@@ -46,8 +46,6 @@ function exileHover() {
 }
 
 function loyaltyHover() {
-    console.log(loyaltyBar.value!.barRef);
-    
     tt.showUpkeepTooltip(props.demon, 
         getTooltipPositionForElement(loyaltyBar.value!.barRef)
     )

@@ -33,19 +33,27 @@
                     "title": "Exile", 
                     "description": "Get rid of this demon.",
                     "metadescription": "How to exile an exile?"
-                }
+                },
+                "upkeep": "Upkeep",
+                "upkeepDescription": "Loyalty will grow over time as this demon's upkeep is paid. Will drop quickly if the demon doesn't have what it wants."
             },
             "tabs": {
                 "resources": "⛏ Resources",
                 "messages": "✉ Messages",
                 "buildings": "🌇 Buildings",
-                "demons": "😈 Demons" 
+                "demons": "😈 Demons" ,
+                "settings": "⚙️ Settings" 
             },
             "sections": {
                 "buildings": {
                     "manualActions": "Manual actions",
-                    "population": "Population"
+                    "population": "Population",
+                    "resources": "Resources"
                 }
+            },
+
+            "settings": {
+                "language": "Language"
             },
 
             "buildings": {
@@ -63,6 +71,10 @@
                 "Imps": "Imps",
                 "Grunts": "Grunts"
             }
+        },
+
+        "messages": {
+            "demonSpawn": "${demonName} (level ${demonLevel} ${demonEmoji} ${demonType}) has joined us."
         }
     },
 
@@ -90,6 +102,11 @@
             "description": "Food for humans. Mainly rats.",
             "metadescription": "May contain traces of human flesh."
         },
+        "Bones": {
+            "name": "Bones",
+            "description": "Building and tooling resource",
+            "metadescription": "The most reusable material on these lands."
+        },
         "Stones": {
             "name": "Stones",
             "description": "Primary building resource.",
@@ -103,6 +120,11 @@
                 "name": "🪨 Gather stones",
                 "description": "Order Eknu Ulburas and his followers to collect some stones.",
                 "metadescription": "Watch out for stone golems."
+            },
+            "Gather bones": {
+                "name": "🦴 Gather bones",
+                "description": "Order Eknu Ulburas and his followers to collect some bones.",
+                "metadescription": "A practically infinite resource in these lands."
             },
             "Gather rats": {
                 "name": "🐀 Gather rats",

@@ -3,6 +3,11 @@ import { parseEmojis } from './emoji';
 import { CONSTANTS } from './constants';
 import en from './en.json'
 
+export const langs = {
+    'en': 'English',
+    'es': 'Español'
+}
+
 export type LOCALE = typeof en
 export type LocaleEntry = {[key: string]: string | LocaleEntry}
 
@@ -21,6 +26,9 @@ treatLoc(en)
 
 export async function setLoc(lang: string) {
     if(lang === 'en') {
+        if (LOC.general.deathReasons.starvation !== 'starvation.') {
+            treatLoc(en)
+        }
         return Promise.resolve(null)
     }
     return fetch(`/locale/${lang}.json`)

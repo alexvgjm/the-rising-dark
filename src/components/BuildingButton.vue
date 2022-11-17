@@ -67,8 +67,12 @@ function clickHandler() {
 
 
 <template>
-    <div ref="button" @mouseenter="hoveringHandler" @focus="hoveringHandler" @blur="ttStore.hideTooltip"
-        @mouseleave="ttStore.hideTooltip" @click="clickHandler" class="building-button" :class="{
+    <button ref="button" 
+        @mouseenter="hoveringHandler" @focus="hoveringHandler" 
+        @blur="ttStore.hideTooltip" @mouseleave="ttStore.hideTooltip"
+        @click="clickHandler" tabindex="0" @keydown.enter="clickHandler"
+        class="building-button" 
+        :class="{
             'building-button--unaffordable': !affordable,
             'building-button--configurable': active !== undefined
         }">
@@ -76,7 +80,7 @@ function clickHandler() {
         <span class="building-button__name">{{ LOC.buildings[id as 'Jail'].name }}</span>
 
         <template v-if="level > 0 && active !== undefined">
-            <button class="building-button__enable"
+            <button class="building-button__enable" tabindex="0"
                     :class="{'building-button__enable--cannot-enable': active === level}"
                     ref="enableButton"
                     @mouseenter="showEnableTooltip" @focus="showEnableTooltip"
@@ -87,7 +91,7 @@ function clickHandler() {
             >{{ active }}</button>
 
             <button class="building-button__disable"
-                    ref="disableButton"
+                    ref="disableButton" tabindex="0"
                     @mouseenter="showDisableTooltip" @focus="showDisableTooltip"
                     @mouseleave="ttStore.hideMiniTooltip" 
                     @blur="ttStore.hideMiniTooltip"
@@ -96,7 +100,7 @@ function clickHandler() {
                     {{ level - active }}
             </button>
         </template>
-    </div>
+    </button>
 
 
 </template>

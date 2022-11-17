@@ -9,7 +9,10 @@ export type SaveGame = {
     demons: DemonCreationPayload[],
     config: Config,
     demonsBaseCapacity: {[k in DemonType]: number},
-    buildings: {[k: string]: number},
+    buildings: {[k: string]: {
+        level: number,
+        active?: number
+    }},
     achievements: string[],
     completedOneTimeEvents: (keyof typeof oneTimeEvents)[]
 }
@@ -36,7 +39,10 @@ export function save() {
 
     const buildings = Object.fromEntries(
                         Object.entries(stores.buildStore.buildings)
-                            .map(([id, b]) => [id, b.level])
+                            .map(([id, b]) => [id, {
+                                level: b.level,
+                                active: b.active
+                            }])
                       )
 
     // Only names of achieved achievements.
@@ -89,8 +95,13 @@ export function load(sg: SaveGame) {
 
     sg.demons.forEach(d => stores.demonStore.newCustomDemon(d))
 
-    Object.entries(sg.buildings).forEach(([id, level]) => {
-        stores.buildStore.buildings[id].level = level
+    Object.entries(sg.buildings).forEach(([id, payload]) => {
+        if(typeof(payload) == 'number') {
+            stores.buildStore.buildings[id].level = payload
+        } else {
+            stores.buildStore.buildings[id].level = payload.level
+            stores.buildStore.buildings[id].active = payload.active
+        }
     })
 
     Object.entries(sg.resources).forEach(([name, quantity]) => {
